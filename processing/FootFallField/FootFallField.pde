@@ -19,7 +19,7 @@
 
 import processing.serial.*;
 
-public static boolean demoMode = false; // set true to run without a real lidar
+public static boolean demoMode = true; // set true to run without a real lidar
 
 
 Effect currentEffect;
@@ -50,6 +50,7 @@ void changeEffect(Effect effect)
 
 void draw() 
 {
+
   footManager.draw();
   
   if( currentEffect != null )
@@ -57,6 +58,7 @@ void draw()
 }
 
 void serialEvent (Serial port) {
+  println("serialEvent");
   footManager.serialEvent(port);
 }
 

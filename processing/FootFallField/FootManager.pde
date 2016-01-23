@@ -48,7 +48,7 @@ class FootManager
     println("Serial ports are");  
     println(Serial.list()); // print the available serial ports
     
-    String portName = Serial.list()[2]; //change the 0 to a 1 or 2 etc. to match your port
+    String portName = Serial.list()[5]; //change the 0 to a 1 or 2 etc. to match your port
     
     myPort = new Serial(context, portName, 115200);
     myPort.buffer(64);
@@ -56,21 +56,38 @@ class FootManager
   
   void serialEvent (Serial myPort) {
   
-  if(myPort.available() > 0) 
+  while(myPort.available() > 0) 
   {
     
     int nRead = myPort.readBytes(inBuffer);
     print("read ");
     println(nRead);
     bufferLength = nRead;
-    parseBuffer();
+    for( int i = 0; i < nRead; i ++ )
+      pendingBytes.add(inBuffer[i]);
+    
     
   }
+  
+  parseBuffer();
 }
 
 byte[] inBuffer = new byte[128];
 int bufferLength = 0;
 int parsePos;
+ArrayList<Byte> pendingBytes = new ArrayList<Byte>();
+
+byte nextByte()
+{
+  return pendingBytes.get(0);
+}
+
+byte scanByte()
+{
+  byte b = pendingBytes.get(0);
+  pendingBytes.remove(0);
+  return b;
+}
 
 
 void parseBuffer()
@@ -81,22 +98,29 @@ void parseBuffer()
   {
     Foot foot;
     
-    if( pendingBytes() >= 5 ) // if we don't have 5 byes, do nothing and wait for more
+    if( pendingBytes.size() >= 5 ) // if we don't have 5 byes, do nothing and wait for more
     {
       if( scanStart())
       {
+         print("got ");
+         print(FootFallField.feet.size());
+         println("feet");
         // Start of rotation, clear old feet
-        FootFallField.feet.clear();
+        FootFallField.feet.clear(); //<>//
+        println("scanStart");
       }
       else if(( foot = scanFoot()) != null)
       {
+        foot.printDiag();
         // add a new foot
-        FootFallField.feet.add(foot);
+        FootFallField.feet.add(foot); //<>//
+       
       }
       else
       {
         // must have lost sync, scan to next zero
-        scanToNull();
+        println("lost sync");
+        scanToNull(); //<>//
       }
     }
   }
