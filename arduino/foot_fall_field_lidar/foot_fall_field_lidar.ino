@@ -65,20 +65,33 @@ void loop()
  
 }
 
+int n = 0;
+
 void loopLidar()
 {
    int range = readLidar();
+
+   n++;
+   if( n % 100 == 0 )
    if( periodMicros != 0 &&       // had our first rev 
         periodMicros < 100000000 )  // not wrapped round
         {
            unsigned long now = micros(); 
-           unsigned long tick = (now - indexMicros) * ticksPerRev / periodMicros;
-           printWord(tick);
-           printWord(range);
-           printNull();
-           //Serial.print( tick );
-           //Serial.print( " : " );
-           //Serial.println( range );
+           unsigned long age = (now - indexMicros);
+           
+           if( age < periodMicros/2 ) // don't bother sending ddata from the back half of the scan
+           {
+             unsigned long tick = age * ticksPerRev / periodMicros;
+             
+             printWord(range);
+              
+             printWord(tick);
+            
+             printNull();
+             //Serial.print( tick );
+             //Serial.print( " : " );
+             //Serial.println( range );
+           }
         }
 }
 
@@ -134,7 +147,10 @@ void loopIndex()
         
       indexMicros = now;
 
-      // mark start of rotation with two nulls
+      // mark start of rotation with 5 nulls
+      printNull();
+      printNull();
+      printNull();
       printNull();
       printNull();
     

@@ -75,21 +75,88 @@ int parsePos;
 
 void parseBuffer()
 {
-  /*
+  
   parsePos = 0;
   while( true )
   {
-    if( isStart( inBuffer, parsePos ))
+    Foot foot;
+    
+    if( pendingBytes() >= 5 ) // if we don't have 5 byes, do nothing and wait for more
     {
-    }
-    else if( parseObject(inBuffer, parsePos))
-    {
-    }
-    else
-    {
-      scanToNull();
+      if( scanStart())
+      {
+        // Start of rotation, clear old feet
+        FootFallField.feet.clear();
+      }
+      else if(( foot = scanFoot()) != null)
+      {
+        // add a new foot
+        FootFallField.feet.add(foot);
+      }
+      else
+      {
+        // must have lost sync, scan to next zero
+        scanToNull();
+      }
     }
   }
-  */
+  
 }
+
+void scanToNull()
+{
+  while( nextByte() != 0 )
+    scanByte();
+}
+
+// five zeros means the start of a new rotation, if first byte is not zero consume nothing
+boolean scanStart()
+{
+  for( int i = 0; i < 5; i ++ )
+  {
+  if( nextByte() == 0 )
+    scanByte();
+  else
+    return false;
+    
+  }
+  
+  return true;
+} 
+
+final static int BAD_WORD = (int) -Foot.ticksPerRev;
+int scanWord()
+{
+
+    int b1 = scanByte();
+    if( b1 == 0 )
+      return BAD_WORD;
+      
+          int b2 = scanByte();
+    if( b2 == 0 )
+      return BAD_WORD;
+      
+    return (b1 & 0x7f) + ((b2 & 0x7f) << 7);
+      
+}
+
+Foot scanFoot()
+{
+  int range = scanWord();
+  if( range == BAD_WORD )
+    return null;
+    
+  int tick = scanWord();
+  if( tick == BAD_WORD )
+    return null;
+    
+  if( nextByte() == 0 )
+  {
+    scanByte();
+    return new Foot( range, tick );
+  }
+  
+  return null;
+}
+
 }
