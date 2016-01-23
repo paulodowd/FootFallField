@@ -1,6 +1,7 @@
 
 /* foot_fall_field_lidar
  *  
+ *  
  *  This runs on an Arduino Nano wired to a LidarLite lidar sensor.
  *  There's a rotating mirror that scans the beam through 360 degrees,
  *  and a hall effect sensor detects a magnet on the rotating assembly to give us an index pulse.
