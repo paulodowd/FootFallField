@@ -34,7 +34,7 @@ class FootManager
       {
         foot.x += 80;
         if( foot.x > FootFallField.calibration.maxLidarX())
-          foot.x = FootFallField.calibration.minLidarX();
+          foot.x = FootFallField.calibration.minLidarX() + foot.x - FootFallField.calibration.maxLidarX();
           
         foot.millis = now;
       }

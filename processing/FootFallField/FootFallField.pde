@@ -1,3 +1,22 @@
+/*
+
+  FootFallField
+  
+  https://github.com/jarkman/FootFallField
+  
+  Talks to an Arduino running the foot_fall_field_lidar sketch,
+  which supplies a list of detected feet.
+  
+  Generates a visualisation from those foot positions, which will be projected 
+  from above so as to align with the feet.
+  
+  Set demoMode to true if you want to run this without a lidar. Then FootManager 
+  will make you simulated feet.
+
+
+
+*/
+
 import processing.serial.*;
 
 public static boolean demoMode = true; // set true to run without a real lidar
