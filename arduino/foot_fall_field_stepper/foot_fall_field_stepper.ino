@@ -1,7 +1,17 @@
-#include <AccelStepper.h>
-
-
-
+/* foot_fall_field_stepper
+ * 
+ *  This runs on an Arduino Nano wired to a Polulu A4988 stepper driver: 
+ *  www.pololu.com/product/1182
+ *  and a stepper motor.
+ *  
+ *  Its only job is to rotate the scanning miirror at a constant speed. 
+ *  
+ *  All the interesting work is done on the other Nano, which is running foot_fall_field_lidar
+ */
+ 
+ 
+ #include <AccelStepper.h>
+ 
 // Stepper driver pins
 #define STEP_PIN 4
 #define DIRECTION_PIN 5

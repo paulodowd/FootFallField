@@ -1,4 +1,17 @@
 
+/* foot_fall_field_lidar
+ *  
+ *  This runs on an Arduino Nano wired to a LidarLite lidar sensor.
+ *  There's a rotating mirror that scans the beam through 360 degrees,
+ *  and a hall effect sensor detects a magnet on the rotating assembly to give us an index pulse.
+ *  
+ *  For performance reasons, the rotation is handled by a stepper run by a second Arduino Nano, running the
+ *  foot_fall_field_stepper sketch.
+ *  
+ *  Range and angle data of the objects detected by the lidar is sent over serial to 
+ *  a Processing sketch, FootFallField, running on a Pi.
+ */
+ 
 #include <Wire.h>
 #include <LIDARLite.h>
 
