@@ -3,5 +3,5 @@
 interface Effect 
 {
   void start();
-  void draw();
+  void draw(ArrayList<Foot> feet);
 }

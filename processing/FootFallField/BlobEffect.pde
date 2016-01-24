@@ -8,14 +8,14 @@ class BlobEffect implements Effect
       background(0);
       noStroke();
     }
-  void draw()
+  void draw(ArrayList<Foot> feet)
   {
       // clear to hide old blobs
       fill( 0 );
       rect( 0,0, width, height );
       
       
-    for( Foot foot : FootFallField.feet)
+    for( Foot foot : feet)
     {
   
       fill(255);

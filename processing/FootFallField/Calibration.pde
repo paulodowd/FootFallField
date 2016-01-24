@@ -5,7 +5,10 @@
 
 class Calibration
 {
-  // Assume a 4m square working area for now
+  // Assume a 4m square working area for now.
+  // Scanner is in the middle of the bottom edge of the square at 0,0
+  // Area extend from x = -200 (left) to x = +200 (right), y = 0 to 400
+  
   final static int lidarWidth = 400;
   final static int lidarDepth = 400;
   

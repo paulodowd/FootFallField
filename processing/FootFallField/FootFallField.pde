@@ -54,11 +54,13 @@ void draw()
   footManager.draw();
   
   if( currentEffect != null )
-    currentEffect.draw();
+    currentEffect.draw(feet);
 }
 
+//int numEvents = 0;
 void serialEvent (Serial port) {
-  println("serialEvent");
+  //print("serialEvent ");
+  //println(numEvents ++);
   footManager.serialEvent(port);
 }
 

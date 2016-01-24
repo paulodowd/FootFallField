@@ -34,6 +34,11 @@ unsigned long ticksPerRev = MICROSTEPS * STEPS_PER_REV * 8;
 #define INDEX_SENSOR_PIN 3 // the hall effect sensor
 #define LED_PIN 13 // the Nano's built-in LED
 
+// LidarLite is connected to SDA and SCL on the Arduino
+// One a Nano, A4 and A5
+// On an Uno, they are dedicaed pins at the end of the header past D13
+
+
 void setup()
 {  
   Serial.begin(115200);
@@ -72,7 +77,7 @@ void loopLidar()
    int range = readLidar();
 
    n++;
-   if( n % 100 == 0 )
+   //if( n % 100 == 0 )
    if( periodMicros != 0 &&       // had our first rev 
         periodMicros < 100000000 )  // not wrapped round
         {
@@ -82,22 +87,18 @@ void loopLidar()
            if( age < periodMicros/2 ) // don't bother sending ddata from the back half of the scan
            {
              unsigned long tick = age * ticksPerRev / periodMicros;
-             
-             printWord(range);
-              
+
+             // Always send 5 bytes - range, tick, and a zero terminator
+             printWord(range);             
              printWord(tick);
-            
              printNull();
-             //Serial.print( tick );
-             //Serial.print( " : " );
-             //Serial.println( range );
            }
         }
 }
 
 void printWord( unsigned long w )
 {
-  // two bytes, 7 bits per byte, with the top bit set
+  // two bytes, 7 bits per byte, with the top bit set so never zero
   byte b1;
 
   byte b2;
@@ -147,7 +148,8 @@ void loopIndex()
         
       indexMicros = now;
 
-      // mark start of rotation with 5 nulls
+      // Mark start of rotation with 5 nulls
+      // Always send 5 bytes, for ease of parsing at the other end
       printNull();
       printNull();
       printNull();

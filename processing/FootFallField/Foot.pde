@@ -29,7 +29,7 @@ class Foot
     tick = t;
     
     float angle = TWO_PI * (float) tick / (float) ticksPerRev;
-    x = (int) ((float) range * cos( angle )); //TODO - check convention and direciton of rotation
+    x = (int) ((float) range * - cos( angle )); //TODO - check convention and direciton of rotation
     y = (int) ((float) range * sin( angle ));
   }
   
