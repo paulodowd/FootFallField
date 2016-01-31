@@ -28,9 +28,15 @@ class Foot
     range = r;
     tick = t;
     
-    float angle = TWO_PI * (float) tick / (float) ticksPerRev;
+    float angle = angle();
     x = (int) ((float) range * - cos( angle )); //TODO - check convention and direciton of rotation
     y = (int) ((float) range * sin( angle ));
+  }
+  
+  float angle() // in radians
+  {
+    float angle = TWO_PI * (float) tick / (float) ticksPerRev;
+    return angle;
   }
   
   void printDiag()

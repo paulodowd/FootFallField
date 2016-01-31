@@ -6,7 +6,8 @@ class BlobEffect implements Effect
     void start()
     {
       background(0);
-      noStroke();
+      stroke(60);
+      //noStroke();
     }
   void draw(ArrayList<Foot> feet)
   {
@@ -14,14 +15,16 @@ class BlobEffect implements Effect
       fill( 0 );
       rect( 0,0, width, height );
       
+      fill(255);
+      stroke(60);
       
     for( Foot foot : feet)
     {
   
-      fill(255);
       
       PVector screenPos = FootFallField.calibration.screenPosForFoot( foot );
       ellipse(screenPos.x, screenPos.y, 20, 20);
+      line(screenPos.x, screenPos.y,width/2, height);
     }
     
   }

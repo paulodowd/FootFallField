@@ -10,7 +10,7 @@ class Calibration
   // Area extend from x = -200 (left) to x = +200 (right), y = 0 to 400
   
   final static int lidarWidth = 300;
-  final static int lidarDepth = 800;
+  final static int lidarDepth = 300;
   
   int screenWidth;
   int screenHeight;
@@ -33,8 +33,14 @@ class Calibration
   
   PVector screenPosForFoot( Foot foot )
   {
-    int sx = (screenWidth * foot.x)/lidarWidth + screenWidth/2;  // assume lidar is in the middle of the bottom edge of the screen
-    int sy = screenHeight - (screenHeight * foot.y)/lidarDepth;
+    return screenPosForXY( foot.x, foot.y );
+   
+  }
+  
+   PVector screenPosForXY( int x, int y ) // x,y in cm from sensor
+  {
+    int sx = (screenWidth * x)/lidarWidth + screenWidth/2;  // assume lidar is in the middle of the bottom edge of the screen
+    int sy = screenHeight - (screenHeight * y)/lidarDepth;
     
     PVector screenPos = new PVector(sx, sy);
     
