@@ -11,8 +11,11 @@ class FootManager
   //ArrayList<Reading> newReadings = new ArrayList<Reading>();
 
   // Values for when we're spotting objects by looking for runs of similar data
-  int currentFootRange;  // lidar range in cm
-  int currentFootTick;   // angle in the range 0 to ticksPerRev/2, in other words 0 to 6400
+  int currentFootStartRange;  // lidar range in cm
+  int currentFootStartTick;   // angle in the range 0 to ticksPerRev/2, in other words 0 to 6400
+    int currentFootEndRange;  // lidar range in cm
+  int currentFootEndTick;   // angle in the range 0 to ticksPerRev/2, in other words 0 to 6400
+
   boolean gotCurrentFoot;
   
   FootManager()
@@ -146,8 +149,7 @@ void parseBuffer()
   */
     if( scanStart())
     {
-      currentFootRange = -1;
-      currentFootTick = -1;
+
       gotCurrentFoot = false;
       
       rotationCounter++;
@@ -195,7 +197,7 @@ void parseBuffer()
 void updateCurrentFoot( Reading reading )
 {
   if( reading.isBackground || reading.range <= 0 ||                         // no object
-      (gotCurrentFoot && Math.abs(currentFootRange - reading.range) > 10 ))  // range has changed a lot
+      (gotCurrentFoot && Math.abs(currentFootEndRange - reading.range) > 10 ))  // range has changed a lot
   {
     if( gotCurrentFoot )  // reached the end of an object
     {
@@ -203,17 +205,36 @@ void updateCurrentFoot( Reading reading )
       // TODO = should got to last point not this one!
       // Why not use the array we just added to ?
       
-      int range = currentFootRange; //TODO - should use an average
-      int tick = (currentFootTick + reading.tick) / 2;  // in the middle
-      Reading newFoot = new Reading( range, tick, reading.millis, reading.rotationCounter );
-      addReading( newFoot, FootFallField.feet );
-      
+      int range = (currentFootStartRange + currentFootEndRange)/2; 
+      int tick = (currentFootStartTick + currentFootEndTick) / 2;  // in the middle
+      Reading newFoot = new Reading( range, tick, reading.rotationCounter );
+      synchronized( FootFallField.feet )
+      {
+        addReading( newFoot, FootFallField.feet );
+      }
     }
     
     gotCurrentFoot = false;
-       currentFootRange = -1;
-    currentFootTick = -1;
+       
   }
+  
+  if( ! reading.isBackground && reading.range > 0 )
+    if( gotCurrentFoot )
+    {
+      // extend the current one
+      currentFootEndRange = reading.range;
+      currentFootEndTick = reading.tick;
+    }
+    else
+    {
+      // start a new current foot
+      gotCurrentFoot = true;
+      currentFootStartRange = reading.range;
+      currentFootEndRange = reading.range;
+      currentFootStartTick = reading.tick;
+      currentFootEndTick = reading.tick;
+  
+    }
  
 }
 void addReading( Reading reading, ArrayList<Reading> readings )
@@ -261,7 +282,7 @@ void addReading( Reading reading, ArrayList<Reading> readings )
     }
     
     if( ! inserted )
-          FootFallField.readings.add(reading); // put it on the end
+          readings.add(reading); // put it on the end
   }
 }
 

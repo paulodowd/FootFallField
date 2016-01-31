@@ -49,9 +49,18 @@ boolean isPastBackground( Reading reading ) // do we think this foot is as far a
 {
   int segment = (int) ((reading.angle() * backgroundSegments) / PI);
   
-  if( segment >=0 && segment < backgroundSegments )
-    if( backgroundRangeAtAngle[segment] != -1 )
-      if( reading.range > backgroundRangeAtAngle[segment] - 20 )
+  int start = segment-1;
+  if( start < 0 )
+    start = 0;
+  
+  // compare reading to 3 neighbouring segments, to avoid problems with readings near the edge of background objects 
+  int end = segment+1;
+  if( end > backgroundSegments -1 )
+    end = backgroundSegments -1;
+    
+  for( int s = start; s <= end; s ++ )
+    if( backgroundRangeAtAngle[s] != -1 )
+      if( reading.range > backgroundRangeAtAngle[s] - 20 )
         return true;
         
   return false;
