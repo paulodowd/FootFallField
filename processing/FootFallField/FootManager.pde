@@ -8,7 +8,7 @@ class FootManager
  
   int rotationCounter = 0;
   
-  ArrayList<Reading> newReadings = new ArrayList<Reading>();
+  //ArrayList<Reading> newReadings = new ArrayList<Reading>();
 
 
   FootManager()
@@ -148,10 +148,13 @@ void parseBuffer()
       
       // Avoid simultaneous-modification  trouble by supplying a whole new list at the end of each scan
       // TODO - could reduce latency by updating the active list in realtime, not in batch
-      FootFallField.readings = newReadings;
-      newReadings = new ArrayList<Reading>();
+      //FootFallField.readings = newReadings;
+      //newReadings = new ArrayList<Reading>();
+      
       
        print("got ");
+       print(FootFallField.readings.size());
+       println(" readings");
        print(FootFallField.readings.size());
        println(" feet");
      
@@ -160,11 +163,10 @@ void parseBuffer()
     }
     else if(( reading = scanFoot()) != null)
     {
-      //foot.printDiag();
+      //reading.printDiag();
       // add a new foot
-      newReadings.add(reading); //<>//
-      background.accumulateBackground( reading );
-      reading.isBackground = background.isPastBackground( reading );
+
+      handleNewReading( reading ); //<>//
      
     }
     else
@@ -181,10 +183,53 @@ void parseBuffer()
   
 }
 
-void handleNewFoot( Reading reading )
+void handleNewReading( Reading reading )
 {
+  background.accumulateBackground( reading );
+  reading.isBackground = background.isPastBackground( reading );
+      
+  boolean inserted = false;
   // remove all feet from older runs and insert this one
   // keep feet in tick order
+  synchronized( FootFallField.readings )
+  {
+    for( int i = 0; i < FootFallField.readings.size(); )
+    {
+      Reading target = FootFallField.readings.get(i);
+      if( target.rotationCounter < reading.rotationCounter &&   // target is from an earlier run
+          target.tick <= reading.tick )                          // and is at a smaller angle
+      {
+        // remove the old, add the new
+        if( ! inserted )
+        {
+          FootFallField.readings.set(i, reading); // if this is the first obsolete one, replace it with the new one
+          i++;
+          inserted = true;
+        }
+        else
+        {
+          FootFallField.readings.remove(i); // just remove later obsolete ones
+        }
+        
+      }
+      else if( target.tick > reading.tick )
+      {
+        if( ! inserted )
+        {
+          FootFallField.readings.add(i, reading); // got past its place in the list, just insert it
+          inserted = true;
+        }
+        break;
+      }
+      else
+      {
+        i++;
+      }
+    }
+    
+    if( ! inserted )
+          FootFallField.readings.add(reading); // put it on the end
+  }
 }
 
 void scanToNull()

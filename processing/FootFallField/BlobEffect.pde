@@ -20,6 +20,8 @@ class BlobEffect implements Effect
       fill(255);
       stroke(60);
       
+    synchronized( readings )  
+    {
     for( Reading reading : readings)
     {
   
@@ -37,6 +39,6 @@ class BlobEffect implements Effect
         line(screenPos.x, screenPos.y,width/2, height);
       }
     }
-    
+    }
   }
 }
