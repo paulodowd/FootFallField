@@ -56,7 +56,7 @@ class FootManager
     myPort.buffer(5);
   }
   
-  void serialEvent (Serial aPort) {
+void serialEvent (Serial aPort) {
   
     readAndProcessSerial();
   }

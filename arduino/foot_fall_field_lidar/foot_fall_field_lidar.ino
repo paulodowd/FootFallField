@@ -17,7 +17,7 @@
 #include <LIDARLite.h>
 
 LIDARLite myLidarLite;
-int lidarReadCount = 0;
+
 
 // Copy these two from foot_fall_field_stepper
 #define MICROSTEPS 8
@@ -26,10 +26,10 @@ int lidarReadCount = 0;
 
 
 boolean lastIndexSense = false;
-unsigned long indexMicros = 0;
-unsigned long periodMicros = 0;
+unsigned long indexTimestampMicros = 0;
+unsigned long rotationDurationMicros = 0;
 unsigned long ticksPerRev = MICROSTEPS * STEPS_PER_REV * 8;
-
+int readsDuringThisRotation = 0;
 
 #define INDEX_SENSOR_PIN 3 // the hall effect sensor
 #define LED_PIN 13 // the Nano's built-in LED
@@ -70,29 +70,30 @@ void loop()
  
 }
 
-int n = 0;
 
 void loopLidar()
 {
-   int range = readLidar();
 
-   n++;
-   //if( n % 100 == 0 )
-   if( periodMicros != 0 &&       // had our first rev 
-        periodMicros < 100000000 )  // not wrapped round
-        {
-           unsigned long now = micros(); 
-           unsigned long age = (now - indexMicros);
+  unsigned long now = micros(); 
+  unsigned long age = (now - indexTimestampMicros);
            
-           if( age < periodMicros/2 ) // don't bother sending ddata from the back half of the scan
-           {
-             unsigned long tick = age * ticksPerRev / periodMicros;
 
-             // Always send 5 bytes - range, tick, and a zero terminator
-             printWord(range);             
-             printWord(tick);
-             printNull();
-           }
+
+   if( rotationDurationMicros != 0 &&       // had our first rev and calculated speed
+        rotationDurationMicros < 100000000 && // not wrapped round
+        age < rotationDurationMicros/2 )  // don't bother sending data from the back half of the scan) 
+        {
+           
+           int range = readLidar(readsDuringThisRotation == 0); // do stabilization on the first read of each rotation to reduce jitter
+           readsDuringThisRotation ++;
+
+           unsigned long tick = age * ticksPerRev / rotationDurationMicros;
+
+           // Always send 5 bytes - range, tick, and a zero terminator
+           printWord(range);             
+           printWord(tick);
+           printNull();
+           
         }
 }
 
@@ -117,18 +118,16 @@ void printNull()
   Serial.write( 0);
 }
 
-int readLidar()
+int readLidar(boolean doStabiization)
 {
    int range;
-  if( lidarReadCount == 0 )
+  if( doStabiization )
     //  Next we need to take 1 reading with preamp stabilization and reference pulse (these default to true)
     range = myLidarLite.distance();
   else
     range = myLidarLite.distance(false,false);    // Next lets take 99 reading without preamp stabilization and reference pulse (these read about 0.5-0.75ms faster than with)
+            // this gets us about 40% more reqdings
 
-   lidarReadCount ++;
-   if( lidarReadCount > 100 )
-     lidarReadCount = 0;
 
      return range;
 }
@@ -143,11 +142,13 @@ void loopIndex()
    {
       // start of pulse
       unsigned long now = micros(); 
-      if( indexMicros != 0 )
-        periodMicros = now - indexMicros;
+      if( indexTimestampMicros != 0 )
+        rotationDurationMicros = now - indexTimestampMicros;
         
-      indexMicros = now;
+      indexTimestampMicros = now;
 
+      readsDuringThisRotation = 0;
+      
       // Mark start of rotation with 5 nulls
       // Always send 5 bytes, for ease of parsing at the other end
       printNull();

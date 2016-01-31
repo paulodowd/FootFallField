@@ -31,7 +31,7 @@ public static FootManager footManager;
 void setup() 
 {
   
-  size(800,800); //make our canvas 200 x 200 pixels big
+  size(1200,700); //fixed canvas size
   
   calibration = new Calibration( width, height );
   
