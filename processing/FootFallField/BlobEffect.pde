@@ -23,8 +23,17 @@ class BlobEffect implements Effect
   
       
       PVector screenPos = FootFallField.calibration.screenPosForFoot( foot );
-      ellipse(screenPos.x, screenPos.y, 20, 20);
-      line(screenPos.x, screenPos.y,width/2, height);
+      if( foot.isBackground )
+      {  
+        fill(64);
+        ellipse(screenPos.x, screenPos.y, 10,10);
+      }
+      else
+      {
+        fill(255);
+        ellipse(screenPos.x, screenPos.y, 20, 20);
+        line(screenPos.x, screenPos.y,width/2, height);
+      }
     }
     
   }

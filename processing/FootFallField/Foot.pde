@@ -13,6 +13,7 @@ class Foot
   int y;      // distance away from the scanner baseline in cm, probably between 0 and 400
   int millis;  // creation time in millis
   int rotationCounter; // which rotation did we see this foot on ?
+  boolean isBackground; // do we think this foot is past the background, so should be ignored ?
   
   // Constructor for test feet
   Foot( int _x, int _y, int _millis, int _rotationCounter )
@@ -21,6 +22,7 @@ class Foot
     y = _y;
     millis = _millis;
     rotationCounter = _rotationCounter;
+    isBackground = false;
   }
   
   // Constructor for real feet from lidar data
@@ -30,9 +32,10 @@ class Foot
     range = r;
     tick = t;
     rotationCounter = _rotationCounter;
+    isBackground = false;
     
     float angle = angle();
-    x = (int) ((float) range * - cos( angle )); //TODO - check convention and direciton of rotation
+    x = (int) ((float) range * - cos( angle ));
     y = (int) ((float) range * sin( angle ));
   }
   

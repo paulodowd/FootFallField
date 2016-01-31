@@ -4,20 +4,14 @@
 class FootManager
 {
   Serial myPort;
-  final static int backgroundSegments = 90; // number of segments of background range we'll accumulate over the 180 degrees of scan
-  int backgroundRangeAtAngle[];
-  final static int backgroundSamples = 100; // rolling average
+  Background background = new Background();
+ 
   int rotationCounter = 0;
   
   FootManager()
   {
     if( demoMode )
       makeTestFeet();
-    
-    backgroundRangeAtAngle = new int[backgroundSegments];
-    for( int i =0; i < backgroundSegments; i ++ )
-      backgroundRangeAtAngle[i] = -1;
-    
   }
   
   void makeTestFeet()
@@ -32,38 +26,11 @@ class FootManager
     if( demoMode )
       moveTestFeet();
       
-    //drawBackground();  // Not working right at the moment
+    background.draw();
   }
   
   
-void drawBackground()
-{
-  fill(204, 102, 0);
-  for( int i =0; i < backgroundSegments; i ++ )
-      if( backgroundRangeAtAngle[i] != -1 )
-      {
-        float angle = i * backgroundSegments / PI;
-        
-        int x = (int) ((float) backgroundRangeAtAngle[i] * - cos( angle )); //TODO - check convention and direciton of rotation
-        int y = (int) ((float) backgroundRangeAtAngle[i] * sin( angle ));
-        
-        PVector screenPos = FootFallField.calibration. screenPosForXY( x, y );
-        ellipse(screenPos.x, screenPos.y, 10, 10);
-      }
-}
 
-void accumulateBackground( Foot foot )
-{
-  int segment = (int) ((foot.angle() * backgroundSegments) / PI);
-  
-  if( segment >=0 && segment < backgroundSegments )
-  {
-    if( true || backgroundRangeAtAngle[segment] == -1 )
-      backgroundRangeAtAngle[segment] = foot.range;  // initialise to the first reading
-    else
-      backgroundRangeAtAngle[segment] = (backgroundRangeAtAngle[segment] * (backgroundSamples -1) + foot.range)/backgroundSamples; // rolling average
-  }
-}
 
   void moveTestFeet()
   {
@@ -194,7 +161,8 @@ void parseBuffer()
       //foot.printDiag();
       // add a new foot
       newFeet.add(foot); //<>//
-      accumulateBackground( foot );
+      background.accumulateBackground( foot );
+      foot.isBackground = background.isPastBackground( foot );
      
     }
     else
