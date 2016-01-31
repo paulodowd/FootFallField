@@ -163,7 +163,7 @@ void parseBuffer()
        print("got ");
        print(FootFallField.readings.size());
        println(" readings");
-       print(FootFallField.readings.size());
+       print(FootFallField.feet.size());
        println(" feet");
      
        //<>//
