@@ -11,7 +11,7 @@ class BlobEffect implements Effect
     }
     
     
-  void draw(ArrayList<Reading> readings)
+  void draw(ArrayList<Reading> readings, ArrayList<Reading> feet)
   {
       // clear to hide old blobs
       fill( 0 );
@@ -37,6 +37,22 @@ class BlobEffect implements Effect
         fill(255);
         ellipse(screenPos.x, screenPos.y, 20, 20);
         line(screenPos.x, screenPos.y,width/2, height);
+      }
+    }
+    }
+    
+     synchronized( feet )  
+    {
+    for( Reading reading : feet)
+    {
+  
+      
+      PVector screenPos = FootFallField.calibration.screenPosForReading( reading );
+      if( ! reading.isBackground )
+      {
+        fill(255);
+        ellipse(screenPos.x, screenPos.y, 40, 40);
+ 
       }
     }
     }

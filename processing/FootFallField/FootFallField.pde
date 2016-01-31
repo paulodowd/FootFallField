@@ -26,7 +26,7 @@ Effect currentEffect;
 
 public static Calibration calibration;
 public static ArrayList<Reading> readings = new ArrayList<Reading>();
-public static ArrayList<Foot> feet = new ArrayList<Foot>();
+public static ArrayList<Reading> feet = new ArrayList<Reading>();
 public static FootManager footManager;
 
 void setup() 
@@ -52,9 +52,11 @@ void changeEffect(Effect effect)
 void draw() 
 {
 
-   
   if( currentEffect != null )
-    currentEffect.draw(readings);
+    currentEffect.draw(readings, feet);
+    
+   
+  footManager.draw();
 }
 
 

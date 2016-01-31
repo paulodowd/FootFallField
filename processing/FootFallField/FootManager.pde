@@ -10,7 +10,11 @@ class FootManager
   
   //ArrayList<Reading> newReadings = new ArrayList<Reading>();
 
-
+  // Values for when we're spotting objects by looking for runs of similar data
+  int currentFootRange;  // lidar range in cm
+  int currentFootTick;   // angle in the range 0 to ticksPerRev/2, in other words 0 to 6400
+  boolean gotCurrentFoot;
+  
   FootManager()
   {
     if( demoMode )
@@ -116,7 +120,7 @@ byte scanByte()
     return 0;
   }
   byte b = pendingBytes.get(0);
-  pendingBytes.remove(0);    //TODO - expensive way to manage fifo buffer - find a quickewr way
+  pendingBytes.remove(0);    //TODO - expensive way to manage fifo buffer - find a quicker way
   return b;
 }
 
@@ -142,6 +146,10 @@ void parseBuffer()
   */
     if( scanStart())
     {
+      currentFootRange = -1;
+      currentFootTick = -1;
+      gotCurrentFoot = false;
+      
       rotationCounter++;
       // Start of a fresh rotation, so hand the list we build during the last rotation to the UI
       // and start building a new list
@@ -166,7 +174,8 @@ void parseBuffer()
       //reading.printDiag();
       // add a new foot
 
-      handleNewReading( reading ); //<>//
+      addReading( reading, FootFallField.readings );
+      updateCurrentFoot(reading); //<>//
      
     }
     else
@@ -183,7 +192,31 @@ void parseBuffer()
   
 }
 
-void handleNewReading( Reading reading )
+void updateCurrentFoot( Reading reading )
+{
+  if( reading.isBackground || reading.range <= 0 ||                         // no object
+      (gotCurrentFoot && Math.abs(currentFootRange - reading.range) > 10 ))  // range has changed a lot
+  {
+    if( gotCurrentFoot )  // reached the end of an object
+    {
+      
+      // TODO = should got to last point not this one!
+      // Why not use the array we just added to ?
+      
+      int range = currentFootRange; //TODO - should use an average
+      int tick = (currentFootTick + reading.tick) / 2;  // in the middle
+      Reading newFoot = new Reading( range, tick, reading.millis, reading.rotationCounter );
+      addReading( newFoot, FootFallField.feet );
+      
+    }
+    
+    gotCurrentFoot = false;
+       currentFootRange = -1;
+    currentFootTick = -1;
+  }
+ 
+}
+void addReading( Reading reading, ArrayList<Reading> readings )
 {
   background.accumulateBackground( reading );
   reading.isBackground = background.isPastBackground( reading );
@@ -191,24 +224,24 @@ void handleNewReading( Reading reading )
   boolean inserted = false;
   // remove all feet from older runs and insert this one
   // keep feet in tick order
-  synchronized( FootFallField.readings )
+  synchronized( readings )
   {
-    for( int i = 0; i < FootFallField.readings.size(); )
+    for( int i = 0; i < readings.size(); )
     {
-      Reading target = FootFallField.readings.get(i);
+      Reading target = readings.get(i);
       if( target.rotationCounter < reading.rotationCounter &&   // target is from an earlier run
           target.tick <= reading.tick )                          // and is at a smaller angle
       {
         // remove the old, add the new
         if( ! inserted )
         {
-          FootFallField.readings.set(i, reading); // if this is the first obsolete one, replace it with the new one
+          readings.set(i, reading); // if this is the first obsolete one, replace it with the new one
           i++;
           inserted = true;
         }
         else
         {
-          FootFallField.readings.remove(i); // just remove later obsolete ones
+          readings.remove(i); // just remove later obsolete ones
         }
         
       }
@@ -216,7 +249,7 @@ void handleNewReading( Reading reading )
       {
         if( ! inserted )
         {
-          FootFallField.readings.add(i, reading); // got past its place in the list, just insert it
+          readings.add(i, reading); // got past its place in the list, just insert it
           inserted = true;
         }
         break;
