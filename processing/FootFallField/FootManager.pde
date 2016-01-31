@@ -7,6 +7,7 @@ class FootManager
   final static int backgroundSegments = 90; // number of segments of background range we'll accumulate over the 180 degrees of scan
   int backgroundRangeAtAngle[];
   final static int backgroundSamples = 100; // rolling average
+  int rotationCounter = 0;
   
   FootManager()
   {
@@ -22,8 +23,8 @@ class FootManager
   void makeTestFeet()
   {
       // make some test feet
-    FootFallField.feet.add(new Foot(-180, 190, millis() - 500));
-    FootFallField.feet.add(new Foot(-140, 210, millis() ));
+    FootFallField.feet.add(new Foot(-180, 190, millis() - 500,0));
+    FootFallField.feet.add(new Foot(-140, 210, millis(),0 ));
   }
   
   void draw()
@@ -172,6 +173,7 @@ void parseBuffer()
   */
     if( scanStart())
     {
+      rotationCounter++;
       // Start of a fresh rotation, so hand the list we build during the last rotation to the UI
       // and start building a new list
       
@@ -209,6 +211,11 @@ void parseBuffer()
   
 }
 
+void handleNewFoot( Foot foot )
+{
+  // remove all feet from older runs and insert this one
+  // keep feet in tick order
+}
 
 void scanToNull()
 {
@@ -280,7 +287,7 @@ Foot scanFoot()
   {
     scanByte();
     //println("scanFoot success");
-    return new Foot( range, tick );
+    return new Foot( range, tick, rotationCounter );
   }
   
   //println("scanFoot - no terminator");
