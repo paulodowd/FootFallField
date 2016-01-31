@@ -153,15 +153,11 @@ void parseBuffer()
       gotCurrentFoot = false;
       
       rotationCounter++;
-      // Start of a fresh rotation, so hand the list we build during the last rotation to the UI
-      // and start building a new list
       
-      // Avoid simultaneous-modification  trouble by supplying a whole new list at the end of each scan
-      // TODO - could reduce latency by updating the active list in realtime, not in batch
-      //FootFallField.readings = newReadings;
-      //newReadings = new ArrayList<Reading>();
-      
-      
+      // Clean out old data from last rotation, if we didn't already clean it up in addReading()
+      cleanReadingsBeforeRotation( FootFallField.readings, rotationCounter ); 
+      cleanReadingsBeforeRotation( FootFallField.feet, rotationCounter ); 
+
        print("got ");
        print(FootFallField.readings.size());
        println(" readings");
@@ -237,6 +233,26 @@ void updateCurrentFoot( Reading reading )
     }
  
 }
+
+void cleanReadingsBeforeRotation( ArrayList<Reading> readings, int currentRotation ) // clean out any leftovers at the end of a rotaiton
+{
+  synchronized( readings )
+  {
+    for( int i = 0; i < readings.size(); )
+    {
+      Reading target = readings.get(i);
+      if( target.rotationCounter < currentRotation )
+      {
+          readings.remove(i); 
+      }
+      else
+      {
+        i++;
+      }
+    }
+  }
+}
+
 void addReading( Reading reading, ArrayList<Reading> readings )
 {
   background.accumulateBackground( reading );

@@ -17,9 +17,26 @@ class BlobEffect implements Effect
       fill( 0 );
       rect( 0,0, width, height );
       
-      fill(255);
-      stroke(60);
+
       
+      
+    synchronized( feet )  
+    {
+      for( Reading reading : feet)
+      {
+    
+        
+        PVector screenPos = FootFallField.calibration.screenPosForReading( reading );
+        {
+          stroke(60);
+          fill(100, 200, 0);
+          ellipse(screenPos.x, screenPos.y, 40, 40);
+          line(screenPos.x, screenPos.y,width/2, height);
+   
+        }
+      }
+    }
+    
     synchronized( readings )  
     {
       for( Reading reading : readings)
@@ -29,32 +46,20 @@ class BlobEffect implements Effect
         PVector screenPos = FootFallField.calibration.screenPosForReading( reading );
         if( reading.isBackground )
         {  
+          stroke(255); // white outline circle
           fill(64);
           ellipse(screenPos.x, screenPos.y, 10,10);
         }
         else
         {
-          fill(255);
+          stroke(255); // white outline circle
+          fill(0,0);
           ellipse(screenPos.x, screenPos.y, 20, 20);
           //line(screenPos.x, screenPos.y,width/2, height);
         }
       }
     }
     
-     synchronized( feet )  
-    {
-      for( Reading reading : feet)
-      {
     
-        
-        PVector screenPos = FootFallField.calibration.screenPosForReading( reading );
-        {
-          fill(100, 200, 0);
-          ellipse(screenPos.x, screenPos.y, 40, 40);
-          line(screenPos.x, screenPos.y,width/2, height);
-   
-        }
-      }
-    }
   }
 }
