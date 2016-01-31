@@ -25,6 +25,7 @@ public static boolean demoMode = false; // set true to run without a real lidar
 Effect currentEffect;
 
 public static Calibration calibration;
+public static ArrayList<Reading> readings = new ArrayList<Reading>();
 public static ArrayList<Foot> feet = new ArrayList<Foot>();
 public static FootManager footManager;
 
@@ -53,17 +54,11 @@ void draw()
 
    
   if( currentEffect != null )
-    currentEffect.draw(feet);
-    
-     footManager.draw();
-
+    currentEffect.draw(readings);
 }
 
-//int numEvents = 0;
-void serialEvent (Serial port) {
-  //print("serialEvent ");
-  //println(numEvents ++);
+
+void serialEvent (Serial port) 
+{
   footManager.serialEvent(port);
 }
-
- 

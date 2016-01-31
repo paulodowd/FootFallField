@@ -31,13 +31,13 @@ class Calibration
     return - lidarWidth/2;
   }
   
-  PVector screenPosForFoot( Foot foot )
+  PVector screenPosForReading( Reading reading )
   {
-    return screenPosForXY( foot.x, foot.y );
+    return screenPosForXY( reading.x, reading.y );
    
   }
   
-   PVector screenPosForXY( int x, int y ) // x,y in cm from sensor
+  PVector screenPosForXY( int x, int y ) // x,y in cm from sensor
   {
     int sx = (screenWidth * x)/lidarWidth + screenWidth/2;  // assume lidar is in the middle of the bottom edge of the screen
     int sy = screenHeight - (screenHeight * y)/lidarDepth;

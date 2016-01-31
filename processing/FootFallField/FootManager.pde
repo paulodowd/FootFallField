@@ -8,6 +8,9 @@ class FootManager
  
   int rotationCounter = 0;
   
+  ArrayList<Reading> newReadings = new ArrayList<Reading>();
+
+
   FootManager()
   {
     if( demoMode )
@@ -17,8 +20,8 @@ class FootManager
   void makeTestFeet()
   {
       // make some test feet
-    FootFallField.feet.add(new Foot(-180, 190, millis() - 500,0));
-    FootFallField.feet.add(new Foot(-140, 210, millis(),0 ));
+    FootFallField.readings.add(new Reading(-180, 190, millis() - 500,0));
+    FootFallField.readings.add(new Reading(-140, 210, millis(),0 ));
   }
   
   void draw()
@@ -36,14 +39,14 @@ class FootManager
   {
     int now = millis();
     
-    for( Foot foot : FootFallField.feet)
-      if( now - foot.millis > 1000 )    // move each foot every second
+    for( Reading reading : FootFallField.readings)
+      if( now - reading.millis > 1000 )    // move each foot every second
       {
-        foot.x += 80;
-        if( foot.x > FootFallField.calibration.maxLidarX())
-          foot.x = FootFallField.calibration.minLidarX() + foot.x - FootFallField.calibration.maxLidarX();
+        reading.x += 80;
+        if( reading.x > FootFallField.calibration.maxLidarX())
+          reading.x = FootFallField.calibration.minLidarX() + reading.x - FootFallField.calibration.maxLidarX();
           
-        foot.millis = now;
+        reading.millis = now;
       }
   }
   
@@ -117,7 +120,6 @@ byte scanByte()
   return b;
 }
 
-ArrayList<Foot> newFeet = new ArrayList<Foot>();
 
 void parseBuffer()
 {
@@ -125,7 +127,7 @@ void parseBuffer()
   parsePos = 0;
   while( true )
   {
-    Foot foot;
+    Reading reading;
     
     if( pendingBytes == null || pendingBytes.size() < 5 ) // if we don't have 5 byes, do nothing and wait for more
       break;
@@ -146,23 +148,23 @@ void parseBuffer()
       
       // Avoid simultaneous-modification  trouble by supplying a whole new list at the end of each scan
       // TODO - could reduce latency by updating the active list in realtime, not in batch
-      FootFallField.feet = newFeet;
-      newFeet = new ArrayList<Foot>();
+      FootFallField.readings = newReadings;
+      newReadings = new ArrayList<Reading>();
       
        print("got ");
-       print(FootFallField.feet.size());
+       print(FootFallField.readings.size());
        println(" feet");
      
        //<>//
       println("scanStart");
     }
-    else if(( foot = scanFoot()) != null)
+    else if(( reading = scanFoot()) != null)
     {
       //foot.printDiag();
       // add a new foot
-      newFeet.add(foot); //<>//
-      background.accumulateBackground( foot );
-      foot.isBackground = background.isPastBackground( foot );
+      newReadings.add(reading); //<>//
+      background.accumulateBackground( reading );
+      reading.isBackground = background.isPastBackground( reading );
      
     }
     else
@@ -179,7 +181,7 @@ void parseBuffer()
   
 }
 
-void handleNewFoot( Foot foot )
+void handleNewFoot( Reading reading )
 {
   // remove all feet from older runs and insert this one
   // keep feet in tick order
@@ -211,7 +213,7 @@ boolean scanStart()
   return true;
 } 
 
-final static int BAD_WORD = (int) -Foot.ticksPerRev;
+final static int BAD_WORD = (int) - Reading.ticksPerRev;
 int scanWord()
 {
 
@@ -227,7 +229,7 @@ int scanWord()
       
 }
 
-Foot scanFoot()
+Reading scanFoot()
 {
   //println("scanFoot start");
   
@@ -255,7 +257,7 @@ Foot scanFoot()
   {
     scanByte();
     //println("scanFoot success");
-    return new Foot( range, tick, rotationCounter );
+    return new Reading( range, tick, rotationCounter );
   }
   
   //println("scanFoot - no terminator");

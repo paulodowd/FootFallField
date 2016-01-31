@@ -32,26 +32,26 @@ class Background
       }
 }
 
-void accumulateBackground( Foot foot )
+void accumulateBackground( Reading reading )
 {
-  int segment = (int) ((foot.angle() * backgroundSegments) / PI);
+  int segment = (int) ((reading.angle() * backgroundSegments) / PI);
   
   if( segment >=0 && segment < backgroundSegments )
   {
     if( backgroundRangeAtAngle[segment] == -1 )
-      backgroundRangeAtAngle[segment] = foot.range;  // initialise to the first reading
+      backgroundRangeAtAngle[segment] = reading.range;  // initialise to the first reading
     else
-      backgroundRangeAtAngle[segment] = (int) (((float)backgroundRangeAtAngle[segment] * (float)(backgroundSamples -1) + (float)foot.range)/(float)backgroundSamples); // rolling average
+      backgroundRangeAtAngle[segment] = (int) (((float)backgroundRangeAtAngle[segment] * (float)(backgroundSamples -1) + (float)reading.range)/(float)backgroundSamples); // rolling average
   }
 }
 
-boolean isPastBackground( Foot foot ) // do we think this foot is as far away as our fixed background ?
+boolean isPastBackground( Reading reading ) // do we think this foot is as far away as our fixed background ?
 {
-  int segment = (int) ((foot.angle() * backgroundSegments) / PI);
+  int segment = (int) ((reading.angle() * backgroundSegments) / PI);
   
   if( segment >=0 && segment < backgroundSegments )
     if( backgroundRangeAtAngle[segment] != -1 )
-      if( foot.range > backgroundRangeAtAngle[segment] - 20 )
+      if( reading.range > backgroundRangeAtAngle[segment] - 20 )
         return true;
         
   return false;
