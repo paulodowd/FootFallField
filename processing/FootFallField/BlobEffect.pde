@@ -5,20 +5,14 @@ class BlobEffect implements Effect
 {
     void start()
     {
-      background(0);
-      stroke(60);
+
       //noStroke();
     }
     
     
   void draw(ArrayList<Reading> readings, ArrayList<Reading> feet)
   {
-      // clear to hide old blobs
-      fill( 0 );
-      rect( 0,0, width, height );
-      
 
-      
       
     synchronized( feet )  
     {

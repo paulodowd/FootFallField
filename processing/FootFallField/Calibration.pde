@@ -46,4 +46,9 @@ class Calibration
     
     return screenPos;
   }
+  
+  void addPoint( Reading reading, PVector markerPos )
+  {
+    //TODO
+  }
 }
