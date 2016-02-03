@@ -25,11 +25,10 @@ class CalibrationEffect implements Effect
     {
        nextPoint();
       
-      if( n > 5 )
+      if( n > 4 )
       {
-        n = -1;
-        //TODO - calibrate and leave if we have enough
-        return;
+        n = 0; // start again
+        points = new ArrayList<CalibrationPoint>();
       }
     }
 
@@ -59,7 +58,12 @@ class CalibrationEffect implements Effect
       
       Reading reading = feet.get(0);
       points.add( new CalibrationPoint( reading, markerPos ));
-      
+      if( points.size() == 4 )
+      {
+        FootFallField.calibration.setPoints( points );
+        
+        return;
+      }
       nextPoint();
         
  
@@ -75,9 +79,10 @@ class CalibrationEffect implements Effect
     for( CalibrationPoint point : points )
     {
       drawMarker( point.screenPos, false );
-      stroke(255); // white outline circle
+      strokeWeight(10);
+      stroke(255); // white outline circle to show a measured point
       fill(0,0);
-      ellipse(point.screenPos.x, point.screenPos.y, 80, 80);
+      ellipse(point.screenPos.x, point.screenPos.y, 120,120);
     }
   }
   void nextPoint()
@@ -91,11 +96,10 @@ class CalibrationEffect implements Effect
   {
     switch( n )
     {
-      case 0: return new PVector( width/2, height/2 );
-      case 1: return new PVector( 0.1 * width, 0.1 * height );
-      case 2: return new PVector( 0.9 * width, 0.1 * height );
-      case 3: return new PVector( 0.1 * width, 0.9 * height );
-      case 4: default: return new PVector( 0.9 * width, 0.9 * height );
+      case 0: return new PVector( 0.1 * width, 0.1 * height );
+      case 1: return new PVector( 0.9 * width, 0.1 * height );
+      case 2: return new PVector( 0.1 * width, 0.9 * height );
+      case 3: default: return new PVector( 0.9 * width, 0.9 * height );
     }
     
 
@@ -103,11 +107,21 @@ class CalibrationEffect implements Effect
   
   void drawMarker( PVector markerPos, boolean fill )
   {
-    stroke(255); // white outline circle
+    
+    
+    
     if( fill )
+    {
+      strokeWeight(0);
+      stroke(0); 
       fill(255); // show filled during the wait time
+    }
     else
+    {
+      strokeWeight(10);
+      stroke(255); 
       fill(0);  // show empty when live
+    }
       
     arc(markerPos.x, markerPos.y, 80, 80, 0, HALF_PI, PIE);
     arc(markerPos.x, markerPos.y, 80, 80, PI, PI+HALF_PI, PIE);

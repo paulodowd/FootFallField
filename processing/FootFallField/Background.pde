@@ -18,6 +18,8 @@ class Background
   
   void draw()
 {
+  strokeWeight(2);
+  
   fill(204, 102, 0);
   for( int i =0; i < backgroundSegments; i ++ )
       if( backgroundRangeAtAngle[i] != -1 )

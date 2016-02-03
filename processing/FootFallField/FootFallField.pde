@@ -22,6 +22,7 @@ import processing.serial.*;
 public static boolean demoMode = false; // set true to run without a real lidar
 
 
+Effect calibrationEffect;
 Effect currentEffect;
 Effect debugEffect;
 
@@ -42,7 +43,7 @@ void setup()
   footManager.openPort(this);
   
   debugEffect = new BlobEffect();
-  changeEffect( new CalibrationEffect());
+  calibrationEffect = new CalibrationEffect();
 }
 
 void changeEffect(Effect effect)
@@ -58,6 +59,9 @@ void draw()
     // clear to hide old blobs
     fill( 0 );
     rect( 0,0, width, height );
+    
+  if( ! calibration.isCalibrated())  
+    calibrationEffect.draw(readings, feet);
     
   if( currentEffect != null )
     currentEffect.draw(readings, feet);

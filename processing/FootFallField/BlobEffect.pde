@@ -13,43 +13,55 @@ class BlobEffect implements Effect
   void draw(ArrayList<Reading> readings, ArrayList<Reading> feet)
   {
 
-      
-    synchronized( feet )  
-    {
-      for( Reading reading : feet)
-      {
+    PVector lidarPos = FootFallField.calibration.screenPosForXY(0,0);
     
-        
-        PVector screenPos = FootFallField.calibration.screenPosForReading( reading );
+    strokeWeight(2);
+    
+    if( feet != null )
+    {
+      synchronized( feet )  
+      {
+        for( Reading reading : feet)
         {
-          stroke(60);
-          fill(100, 200, 0);
-          ellipse(screenPos.x, screenPos.y, 40, 40);
-          line(screenPos.x, screenPos.y,width/2, height);
-   
+      
+          
+          PVector screenPos = FootFallField.calibration.screenPosForReading( reading );
+          {
+            stroke(60);
+            fill(100, 200, 0);
+            ellipse(screenPos.x, screenPos.y, 40, 40);
+            line(screenPos.x, screenPos.y,lidarPos.x, lidarPos.y);
+     
+          }
         }
       }
     }
     
-    synchronized( readings )  
+    if( readings != null )
     {
-      for( Reading reading : readings)
+      synchronized( readings )  
       {
-    
+        strokeWeight(2);
         
-        PVector screenPos = FootFallField.calibration.screenPosForReading( reading );
-        if( reading.isBackground )
-        {  
-          stroke(255); // white outline circle
-          fill(64);
-          ellipse(screenPos.x, screenPos.y, 10,10);
-        }
-        else
+        for( Reading reading : readings)
         {
-          stroke(255); // white outline circle
-          fill(0,0);
-          ellipse(screenPos.x, screenPos.y, 20, 20);
-          //line(screenPos.x, screenPos.y,width/2, height);
+      
+          
+          PVector screenPos = FootFallField.calibration.screenPosForReading( reading );
+          if( reading.isBackground )
+          {  
+            stroke(255); // white outline circle
+            fill(64);
+            ellipse(screenPos.x, screenPos.y, 10,10);
+          }
+          else
+          {
+            
+            stroke(255); // white outline circle
+            fill(0,0);
+            ellipse(screenPos.x, screenPos.y, 20, 20);
+            //line(screenPos.x, screenPos.y,width/2, height);
+          }
         }
       }
     }
