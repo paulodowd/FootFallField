@@ -10,6 +10,7 @@ class CalibrationEffect implements Effect
   int endMillis = 0;
   int n = -1;
   
+  ArrayList<CalibrationPoint> points = new ArrayList<CalibrationPoint>();
     void start()
     {
       
@@ -22,8 +23,7 @@ class CalibrationEffect implements Effect
     
     if( n == -1 || now - startMillis > 5000 ) // time to change
     {
-      n++;
-      startMillis = now;
+       nextPoint();
       
       if( n > 5 )
       {
@@ -33,11 +33,17 @@ class CalibrationEffect implements Effect
       }
     }
 
-      
+    drawExistingPoints();
+    
     PVector markerPos = markerForN( n );
     
-    drawMarker( markerPos );
+    if( now - startMillis < 2000 ) // 2 secs to get into position
+    {
+      drawMarker( markerPos, true );
+      return;
+    }
     
+    drawMarker( markerPos, false );
     
       
       
@@ -48,18 +54,37 @@ class CalibrationEffect implements Effect
         return;
       }
       
-      if( now - startMillis < 2000 )
-        return;
+      
         
       
       Reading reading = feet.get(0);
-      FootFallField.calibration.addPoint( reading, markerPos );
+      points.add( new CalibrationPoint( reading, markerPos ));
+      
+      nextPoint();
         
  
     }
     
     
     
+  }
+  
+  void drawExistingPoints()
+  {
+    // draw completed points with an outline circle
+    for( CalibrationPoint point : points )
+    {
+      drawMarker( point.screenPos, false );
+      stroke(255); // white outline circle
+      fill(0,0);
+      ellipse(point.screenPos.x, point.screenPos.y, 80, 80);
+    }
+  }
+  void nextPoint()
+  {
+    int now = millis();
+     n++;
+      startMillis = now;
   }
   
   PVector markerForN( int n )
@@ -76,10 +101,14 @@ class CalibrationEffect implements Effect
 
   }
   
-  void drawMarker( PVector markerPos )
+  void drawMarker( PVector markerPos, boolean fill )
   {
     stroke(255); // white outline circle
-    fill(255);
+    if( fill )
+      fill(255); // show filled during the wait time
+    else
+      fill(0);  // show empty when live
+      
     arc(markerPos.x, markerPos.y, 80, 80, 0, HALF_PI, PIE);
     arc(markerPos.x, markerPos.y, 80, 80, PI, PI+HALF_PI, PIE);
   }
