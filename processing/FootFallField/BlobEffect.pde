@@ -33,7 +33,7 @@ class BlobEffect implements Effect
             ellipse(screenPos.x, screenPos.y, 100,100);
             
             // And draw a line to show their speed and direction
-            PVector vectorPos = FootFallField.calibration.screenPosForXY( person.xForecast(1000), person.yForecast(1000) );
+            PVector vectorPos = FootFallField.calibration.screenPosForXY( person.xForecast(500), person.yForecast(500) );
             line(screenPos.x, screenPos.y,vectorPos.x, vectorPos.y);
      
           }

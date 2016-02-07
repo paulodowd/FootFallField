@@ -6,7 +6,7 @@ class Person
   float x;      // distance along the baseline left of the scanner in cm, probably between -200 and 200
   float y;      // distance away from the scanner baseline in cm, probably between 0 and 400
   int rotationCounter;
-  int millis = -1;  // creation time in millis
+  int millis = -1;  // creation/update time in millis
   
   float vx = 0; // velocity in cm/mS
   float vy = 0;
@@ -20,7 +20,7 @@ class Person
   
   boolean consistentWith( Reading foot ) // might this foot be the next pave for this person ?
   {
-    return distanceFrom( foot ) < 80;
+    return forecastDistanceFrom( foot ) < 80;
   }
   
   void newFoot( Reading foot ) // update this person on the assumption this is their next pace
@@ -41,6 +41,8 @@ class Person
       else
       {
         // average with previous velocity to smooth out left/right step alternation
+        //TODO - keep an array of feet, so we can always project off the last 3 ?
+        //TODO - test with real feet, see idf side-to-side is really a problem
         vx = (vx + newVx)/2;
         vy = (vy + newVy)/2;
       }
@@ -69,5 +71,14 @@ class Person
   float distanceFrom( Reading foot )
   {
     return sqrt( (x-foot.x)* (x-foot.x) + (y-foot.y)*(y-foot.y) );
+  }
+  
+  float forecastDistanceFrom( Reading foot ) // How far from our forecast location to this foot ?
+  {
+    int t = foot.millis - millis;
+    float xf = xForecast(t);
+    float yf = yForecast(t);
+    
+    return sqrt( (xf-foot.x)* (xf-foot.x) + (yf-foot.y)*(yf-foot.y) );
   }
 }

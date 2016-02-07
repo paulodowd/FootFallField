@@ -7,7 +7,7 @@ class PersonManager
     synchronized( people )
     {
     for( Person person : people )
-      if( person.consistentWith( foot ))
+      if( person.consistentWith( foot )) //TODO - should pick the best person, not the first plausible one
       {
         person.newFoot( foot );
         return;
