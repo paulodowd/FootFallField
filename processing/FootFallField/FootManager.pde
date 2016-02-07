@@ -27,8 +27,8 @@ class FootManager
   void makeTestFeet()
   {
       // make some test feet
-    FootFallField.feet.add(new Reading(-180, 190, millis() - 500,0));
-    FootFallField.feet.add(new Reading(-140, 210, millis(),0 ));
+    FootFallField.feet.add(new Reading(-180, 195, millis() - 500,0));
+    FootFallField.feet.add(new Reading(-140, 205, millis(),0 ));
   }
   
   void draw()

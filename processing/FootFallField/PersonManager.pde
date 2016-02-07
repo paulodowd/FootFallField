@@ -4,16 +4,32 @@ class PersonManager
   
   void updateForFoot( Reading foot )
   {
+    float bestRange = 0;
+    Person bestPerson = null;
+    
     synchronized( people )
     {
-    for( Person person : people )
-      if( person.consistentWith( foot )) //TODO - should pick the best person, not the first plausible one
+      // Find the person whose forecast position is closest to this foot
+      for( Person person : people )
       {
-        person.newFoot( foot );
+        float d =  person.forecastDistanceFrom( foot );
+        if( d < Person.compatibleDistance )
+        {
+          if( d < bestRange || bestPerson == null )
+          {
+            bestRange = d;
+            bestPerson = person;
+          }
+        }
+      }
+    
+      if( bestPerson != null )
+      {
+        bestPerson.newFoot( foot );
         return;
       }
-      
-    if( people.size() == 0 )
+
+      // If we didn't find one, make a new person
       people.add( new Person(foot));
     } 
   }

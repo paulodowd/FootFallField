@@ -32,9 +32,19 @@ class BlobEffect implements Effect
             fill(0);
             ellipse(screenPos.x, screenPos.y, 100,100);
             
-            // And draw a line to show their speed and direction
-            PVector vectorPos = FootFallField.calibration.screenPosForXY( person.xForecast(500), person.yForecast(500) );
+            // And draw a grey circle to show their forecast position
+            PVector vectorPos = FootFallField.calibration.screenPosForXY( person.xForecast(0), person.yForecast(0) );
             line(screenPos.x, screenPos.y,vectorPos.x, vectorPos.y);
+            stroke(100);
+            noFill();
+            ellipse(vectorPos.x, vectorPos.y, 100,100);
+  
+            // and a big pale circle to show the acceptable next-step positions
+            noStroke();
+            fill(100, 100, 200, 65);
+            //fill(153);
+            float radius = FootFallField.calibration.screenDistanceNear(person.xForecast(0), person.yForecast(0),Person.compatibleDistance);
+            ellipse(vectorPos.x, vectorPos.y, radius*2,radius*2);
      
           }
         }

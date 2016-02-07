@@ -3,6 +3,8 @@
 
 class Person
 {
+  final static int compatibleDistance = 80;
+  
   float x;      // distance along the baseline left of the scanner in cm, probably between -200 and 200
   float y;      // distance away from the scanner baseline in cm, probably between 0 and 400
   int rotationCounter;
@@ -10,7 +12,7 @@ class Person
   
   float vx = 0; // velocity in cm/mS
   float vy = 0;
-  int steps;
+  int steps;      // how many steps have we seen them take ? NB - we don't know the velovity if steps < 2
   
   Person( Reading foot )
   {
@@ -20,7 +22,11 @@ class Person
   
   boolean consistentWith( Reading foot ) // might this foot be the next pave for this person ?
   {
-    return forecastDistanceFrom( foot ) < 80;
+    float d =  forecastDistanceFrom( foot );
+    
+    println(d);
+    
+    return d < compatibleDistance;
   }
   
   void newFoot( Reading foot ) // update this person on the assumption this is their next pace

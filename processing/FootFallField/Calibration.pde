@@ -145,6 +145,20 @@ class Calibration
     
   }
 
+float screenDistanceNear( float x, float y, float distance ) // distance in pixels corresponding to 'distance' near x,y
+{
+
+  PVector originPos = screenPosForXY(x,y);
+  PVector targetPos = screenPosForXY(x+distance,y);
+  return distanceBetween(originPos, targetPos);
+}
+
+float distanceBetween( PVector a, PVector b)
+{
+  return sqrt((a.x-b.x)*(a.x-b.x) + (a.y-b.y)*(a.y-b.y));
+}
+  
+  
   /*
   from
   http://www.gamedev.net/topic/596392-uv-coordinate-on-a-2d-quadrilateral/page-1#entry4779072
