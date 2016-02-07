@@ -19,7 +19,7 @@
 
 import processing.serial.*;
 
-public static boolean demoMode = false; // set true to run without a real lidar
+public static boolean demoMode = true; // set true to run without a real lidar
 
 
 Effect calibrationEffect;
@@ -27,9 +27,11 @@ Effect currentEffect;
 Effect debugEffect;
 
 public static Calibration calibration;
-public static ArrayList<Reading> readings = new ArrayList<Reading>();
-public static ArrayList<Reading> feet = new ArrayList<Reading>();
+public static ArrayList<Reading> readings = new ArrayList<Reading>(); // All the Lidar readings
+public static ArrayList<Reading> feet = new ArrayList<Reading>();     // Foot locations inferred from clusters of Lidar points
+
 public static FootManager footManager;
+public static PersonManager personManager;
 
 void setup() 
 {
@@ -39,11 +41,14 @@ void setup()
   calibration = new Calibration( width, height );
   
   footManager = new FootManager();
+  personManager = new PersonManager();
   
   footManager.openPort(this);
   
   debugEffect = new BlobEffect();
-  calibrationEffect = new CalibrationEffect();
+  
+  if( ! demoMode )
+    calibrationEffect = new CalibrationEffect();
 }
 
 void changeEffect(Effect effect)
@@ -60,14 +65,15 @@ void draw()
     fill( 0 );
     rect( 0,0, width, height );
     
-  if( ! calibration.isCalibrated())  
-    calibrationEffect.draw(readings, feet);
+    if( ! demoMode )
+      if( ! calibration.isCalibrated())  
+        calibrationEffect.draw(readings, feet, personManager.people);
     
   if( currentEffect != null )
-    currentEffect.draw(readings, feet);
+    currentEffect.draw(readings, feet, personManager.people);
     
   if( debugEffect != null )
-    debugEffect.draw(readings, feet); // draw some blobs so we can see feet
+    debugEffect.draw(readings, feet, personManager.people); // draw some blobs so we can see feet, people etc
    
   footManager.draw();                  // draws the background
 }

@@ -9,8 +9,8 @@ class Reading
   int range;  // lidar range in cm
   int tick;   // angle in the range 0 to ticksPerRev/2, in other words 0 to 6400
   
-  int x;      // distance along the baseline left of the scanner in cm, probably between -200 and 200
-  int y;      // distance away from the scanner baseline in cm, probably between 0 and 400
+  float x;      // distance along the baseline left of the scanner in cm, probably between -200 and 200
+  float y;      // distance away from the scanner baseline in cm, probably between 0 and 400
   int millis;  // creation time in millis
   int rotationCounter; // which rotation did we see this foot on ?
   boolean isBackground; // do we think this foot is past the background, so should be ignored ?

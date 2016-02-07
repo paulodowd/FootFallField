@@ -10,10 +10,36 @@ class BlobEffect implements Effect
     }
     
     
-  void draw(ArrayList<Reading> readings, ArrayList<Reading> feet)
+  void draw(ArrayList<Reading> readings, ArrayList<Reading> feet, ArrayList<Person> people)
   {
 
     PVector lidarPos = FootFallField.calibration.screenPosForXY(0,0);
+    
+     strokeWeight(5);
+    
+    if( people != null )
+    {
+      synchronized( people )  
+      {
+        for( Person person : people)
+        {
+      
+          
+          PVector screenPos = FootFallField.calibration.screenPosForXY( person.x, person.y );
+          {
+            // Draw the person as a big hollow circle
+            stroke(200);
+            fill(0);
+            ellipse(screenPos.x, screenPos.y, 100,100);
+            
+            // And draw a line to show their speed and direction
+            PVector vectorPos = FootFallField.calibration.screenPosForXY( person.xForecast(1000), person.yForecast(1000) );
+            line(screenPos.x, screenPos.y,vectorPos.x, vectorPos.y);
+     
+          }
+        }
+      }
+    }
     
     strokeWeight(2);
     

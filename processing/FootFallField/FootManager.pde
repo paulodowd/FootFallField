@@ -27,26 +27,34 @@ class FootManager
   void makeTestFeet()
   {
       // make some test feet
-    FootFallField.readings.add(new Reading(-180, 190, millis() - 500,0));
-    FootFallField.readings.add(new Reading(-140, 210, millis(),0 ));
+    FootFallField.feet.add(new Reading(-180, 190, millis() - 500,0));
+    FootFallField.feet.add(new Reading(-140, 210, millis(),0 ));
   }
   
   void draw()
   {
     if( demoMode )
       moveTestFeet();
-      
+    
+    
     background.draw();
   }
   
   
-
+  int testRotationMillis = 0;
 
   void moveTestFeet()
   {
     int now = millis();
     
-    for( Reading reading : FootFallField.readings)
+    if( now - testRotationMillis > 500 ) // simulate rotationCounter increasing every half a second
+    {
+      testRotationMillis = now;
+      rotationCounter++;
+      FootFallField.personManager.cleanBeforeRotation( rotationCounter ); 
+    }
+    
+    for( Reading reading : FootFallField.feet)
       if( now - reading.millis > 1000 )    // move each foot every second
       {
         reading.x += 80;
@@ -54,6 +62,10 @@ class FootManager
           reading.x = FootFallField.calibration.minLidarX() + reading.x - FootFallField.calibration.maxLidarX();
           
         reading.millis = now;
+        reading.rotationCounter = rotationCounter;
+        
+        
+        FootFallField.personManager.updateForFoot( reading );
       }
   }
   
@@ -157,6 +169,7 @@ void parseBuffer()
       // Clean out old data from last rotation, if we didn't already clean it up in addReading()
       cleanReadingsBeforeRotation( FootFallField.readings, rotationCounter ); 
       cleanReadingsBeforeRotation( FootFallField.feet, rotationCounter ); 
+      FootFallField.personManager.cleanBeforeRotation( rotationCounter ); 
 
        print("got ");
        print(FootFallField.readings.size());
@@ -207,6 +220,7 @@ void updateCurrentFoot( Reading reading )
       synchronized( FootFallField.feet )
       {
         addReading( newFoot, FootFallField.feet );
+        FootFallField.personManager.updateForFoot( newFoot );
       }
     }
     

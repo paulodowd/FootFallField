@@ -17,11 +17,11 @@ class CalibrationEffect implements Effect
     }
     
     
-  void draw(ArrayList<Reading> readings, ArrayList<Reading> feet)
+  void draw(ArrayList<Reading> readings, ArrayList<Reading> feet, ArrayList<Person> people)
   {
     int now = millis();
     
-    if( n == -1 || now - startMillis > 5000 ) // time to change
+    if( n == -1 || now - startMillis > 10000 ) // time to change
     {
        nextPoint();
       
@@ -36,7 +36,7 @@ class CalibrationEffect implements Effect
     
     PVector markerPos = markerForN( n );
     
-    if( now - startMillis < 2000 ) // 2 secs to get into position
+    if( now - startMillis < 5000 ) // 2 secs to get into position
     {
       drawMarker( markerPos, true );
       return;
@@ -98,8 +98,8 @@ class CalibrationEffect implements Effect
     {
       case 0: return new PVector( 0.1 * width, 0.1 * height );
       case 1: return new PVector( 0.9 * width, 0.1 * height );
-      case 2: return new PVector( 0.1 * width, 0.9 * height );
-      case 3: default: return new PVector( 0.9 * width, 0.9 * height );
+      case 2: return new PVector( 0.9 * width, 0.9 * height );
+      case 3: default: return new PVector( 0.1 * width, 0.9 * height );
     }
     
 

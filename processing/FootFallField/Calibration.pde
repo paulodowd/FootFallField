@@ -9,7 +9,7 @@ class Calibration
   // Scanner is in the middle of the bottom edge of the square at 0,0
   // Area extend from x = -200 (left) to x = +200 (right), y = 0 to 400
   
-  final static int lidarWidth = 300;
+  final static int lidarWidth = 500;
   final static int lidarDepth = 300;
   
   int screenWidth;
@@ -21,8 +21,39 @@ class Calibration
   {
     screenWidth = w;
     screenHeight = h;
+    
+    test();
   }
   
+  void test()
+  {
+
+    points = new ArrayList<CalibrationPoint>();
+    
+    points.add( new CalibrationPoint( new Reading( 11,12,millis(),1), new PVector( 101, 102 ) ));
+    points.add( new CalibrationPoint( new Reading( 10,90,millis(),1), new PVector( 103, 901 ) ));
+ 
+    points.add( new CalibrationPoint( new Reading( 91,92,millis(),1), new PVector( 902, 903 ) ));
+     points.add( new CalibrationPoint( new Reading( 93,18,millis(),1), new PVector( 904, 104 ) ));
+ 
+    testPoint( 100,100 );
+    testPoint( 900,100 );
+    testPoint( 900,900 );
+     
+    points = null;
+  }
+  
+  void testPoint( int x, int y )
+  {
+     PVector p = screenPosForXY( x, y );
+     print( x );
+     print(", ");
+     print( y );
+     print( " maps to " );
+      print(p.x);
+      print(", ");
+     println( p.y );
+  }
   int maxLidarX()
   {
     return lidarWidth/2;
@@ -39,10 +70,10 @@ class Calibration
    
   }
   
-  PVector screenPosForXYUncalibrated( int x, int y ) // x,y in cm from sensor
+  PVector screenPosForXYUncalibrated( float x, float y ) // x,y in cm from sensor
   {
-    int sx = (screenWidth * x)/lidarWidth + screenWidth/2;  // assume lidar is in the middle of the bottom edge of the screen
-    int sy = screenHeight - (screenHeight * y)/lidarDepth;
+    float sx = (screenWidth * x)/lidarWidth + screenWidth/2;  // assume lidar is in the middle of the bottom edge of the screen
+    float sy = screenHeight - (screenHeight * y)/lidarDepth;
     
     PVector screenPos = new PVector(sx, sy);
     
@@ -63,9 +94,9 @@ class Calibration
     return true;
   }
   
-  PVector screenPosForXY( int px, int py )
+  PVector screenPosForXY( float px, float py ) //<>//
   {
-    if( points == null || points.size() != 4 )  // no calibration data yet
+    if( points == null || points.size() != 4 )  // no calibration data yet //<>//
       return screenPosForXYUncalibrated( px, py ); // just so we can draw something
       
     Reading a = points.get(0).foot;
@@ -73,25 +104,41 @@ class Calibration
     Reading c = points.get(2).foot;
     Reading d = points.get(3).foot;
     
-    double C = (double)(a.y - py) * (d.x - px) - (double)(a.x - px) * (d.y - py);
-      double B = (double)(a.y - py) * (c.x - d.x) + (double)(b.y - a.y) * (d.x - px) - (double)(a.x - px) * (c.y - d.y) - (double)(b.x - a.x) * (d.y - py);
-      double A = (double)(b.y - a.y) * (c.x - d.x) - (double)(b.x - a.x) * (c.y - d.y);
+    float C = (float)(a.y - py) * (d.x - px) - (float)(a.x - px) * (d.y - py); //<>//
+      float B = (float)(a.y - py) * (c.x - d.x) + (float)(b.y - a.y) * (d.x - px) - (float)(a.x - px) * (c.y - d.y) - (float)(b.x - a.x) * (d.y - py);
+      float A = (float)(b.y - a.y) * (c.x - d.x) - (float)(b.x - a.x) * (c.y - d.y);
 
-      double D = B * B - 4 * A * C;
+      float D = B * B - 4 * A * C;
 
-      double u = (-B - Math.sqrt(D)) / (2 * A);
+     print( C );
+     print(", ");
+     print( B );
+     print( ", " );
+      print(A);
+      print(", ");
+     println( D );
+     
+      float u = (-B - sqrt((float)D)) / (2 * A);
 
-      double p1x = a.x + (b.x - a.x) * u;
-      double p2x = d.x + (c.x - d.x) * u;
+      float p1x = a.x + (b.x - a.x) * u;
+      float p2x = d.x + (c.x - d.x) * u;
       
 
-      double v = (px - p1x) / (p2x - p1x);
+      float v = (px - p1x) / (p2x - p1x);
       
+      print( u );
+     print(", ");
+     print( p1x );
+     print( ", " );
+      print( p2x );
+      print(", ");
+     println( v );
+     
       // u and v are normalised so 0->1 maps to the side of the rectangle
       // now calculate the screen coordinates for p
       
-      double sx = a.x + u * (b.x - a.x);
-      double sy = a.y + v * (c.y - a.y);
+      float sx = a.x + u * (b.x - a.x);
+      float sy = a.y + v * (c.y - a.y);
       
       return new PVector( (int) sx, (int) sy );
       
