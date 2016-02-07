@@ -66,6 +66,7 @@ class FootManager
         
         
         FootFallField.personManager.updateForFoot( reading );
+        notifyNewFoot( reading );
       }
   }
   
@@ -221,6 +222,7 @@ void updateCurrentFoot( Reading reading )
       {
         addReading( newFoot, FootFallField.feet );
         FootFallField.personManager.updateForFoot( newFoot );
+        notifyNewFoot( reading );
       }
     }
     

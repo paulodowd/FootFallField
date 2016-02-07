@@ -104,4 +104,6 @@ class BlobEffect implements Effect
     
     
   }
+  
+    void notifyNewFoot( Reading foot ){}
 }

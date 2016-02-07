@@ -49,6 +49,8 @@ void setup()
   
   if( ! demoMode )
     calibrationEffect = new CalibrationEffect();
+    
+    changeEffect(new RippleEffect());
 }
 
 void changeEffect(Effect effect)
@@ -76,8 +78,14 @@ void draw()
     debugEffect.draw(readings, feet, personManager.people); // draw some blobs so we can see feet, people etc
    
   footManager.draw();                  // draws the background
+  
 }
 
+void notifyNewFoot( Reading foot )
+{
+  if( currentEffect != null )
+    currentEffect.notifyNewFoot( foot );
+}
 
 void serialEvent (Serial port) 
 {

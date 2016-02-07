@@ -126,4 +126,6 @@ class CalibrationEffect implements Effect
     arc(markerPos.x, markerPos.y, 80, 80, 0, HALF_PI, PIE);
     arc(markerPos.x, markerPos.y, 80, 80, PI, PI+HALF_PI, PIE);
   }
+  
+  void notifyNewFoot( Reading foot ){}
 }
