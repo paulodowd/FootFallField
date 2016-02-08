@@ -46,7 +46,7 @@ void setup()
   
   footManager.openPort(this);
   
-  debugEffect = new BlobEffect();
+  debugEffect = new DebugEffect();
   
   if( ! demoMode )
     calibrationEffect = new CalibrationEffect();

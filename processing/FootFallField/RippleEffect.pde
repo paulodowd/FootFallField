@@ -20,20 +20,14 @@ class Ripple
 }
 
 
-class RippleEffect implements Effect
+class RippleEffect extends Effect
 {
   float diaIncreaseRate = 6; //diameter increasing rate
   float strokeDecreaseRate = 0.3; //stroke weight decreasing rate
 
     ArrayList<Ripple> ripples = new ArrayList<Ripple>();
   
-    void start()
-    {
 
-      //noStroke();
-    }
-    
-    
   void draw(ArrayList<Reading> readings, ArrayList<Reading> feet, ArrayList<Person> people)
   {
     noFill();

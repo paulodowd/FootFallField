@@ -1,15 +1,9 @@
 
 // Draw a blob for each Foot
 
-class BlobEffect implements Effect
+class DebugEffect extends Effect
 {
-    void start()
-    {
 
-      //noStroke();
-    }
-    
-    
   void draw(ArrayList<Reading> readings, ArrayList<Reading> feet, ArrayList<Person> people)
   {
 
@@ -104,6 +98,5 @@ class BlobEffect implements Effect
     
     
   }
-  
-    void notifyNewFoot( Reading foot ){}
+
 }

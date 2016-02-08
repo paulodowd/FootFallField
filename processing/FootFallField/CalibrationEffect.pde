@@ -1,7 +1,7 @@
 
 // Calibrate the Calibration so projector matches lidar
 
-class CalibrationEffect implements Effect
+class CalibrationEffect extends Effect
 {
   
   int currentX = 0;
@@ -11,11 +11,7 @@ class CalibrationEffect implements Effect
   int n = -1;
   
   ArrayList<CalibrationPoint> points = new ArrayList<CalibrationPoint>();
-    void start()
-    {
-      
-    }
-    
+
     
   void draw(ArrayList<Reading> readings, ArrayList<Reading> feet, ArrayList<Person> people)
   {
@@ -127,5 +123,4 @@ class CalibrationEffect implements Effect
     arc(markerPos.x, markerPos.y, 80, 80, PI, PI+HALF_PI, PIE);
   }
   
-  void notifyNewFoot( Reading foot ){}
 }
