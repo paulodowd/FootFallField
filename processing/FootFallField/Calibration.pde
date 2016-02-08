@@ -9,8 +9,8 @@ class Calibration
   // Scanner is in the middle of the bottom edge of the square at 0,0
   // Area extend from x = -200 (left) to x = +200 (right), y = 0 to 400
   
-  final static int lidarWidth = 500;
-  final static int lidarDepth = 300;
+  final static int lidarWidth = 250;
+  final static int lidarDepth = 250;
   
   int screenWidth;
   int screenHeight;
@@ -72,7 +72,12 @@ class Calibration
   
   PVector screenPosForXYUncalibrated( float x, float y ) // x,y in cm from sensor
   {
-    float sx = (screenWidth * x)/lidarWidth + screenWidth/2;  // assume lidar is in the middle of the bottom edge of the screen
+    float reflection = 1;
+    
+    if( usingMirror )
+      reflection = -1; // using a mirror for more range, which swaps left/right
+    
+    float sx = reflection * (screenWidth * x)/lidarWidth + screenWidth/2;  // assume lidar is in the middle of the bottom edge of the screen
     float sy = screenHeight - (screenHeight * y)/lidarDepth;
     
     PVector screenPos = new PVector(sx, sy);

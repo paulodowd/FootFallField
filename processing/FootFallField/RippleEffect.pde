@@ -1,5 +1,9 @@
 // Draw a ripple for each Foot
 
+// from http://www.openprocessing.org/sketch/51756,
+// https://legenddolphin.wordpress.com/2011/11/05/ripples-programmed-by-using-processing/, with thanks to 
+// Yen-Chia Hsu
+
 class Ripple
 {
   float x,y,d,sw,sr,sg,sb,sa;
@@ -18,8 +22,8 @@ class Ripple
 
 class RippleEffect implements Effect
 {
-  float diaIncreaseRate = 2; //diameter increasing rate
-  float strokeDecreaseRate = 0.1; //stroke weight decreasing rate
+  float diaIncreaseRate = 6; //diameter increasing rate
+  float strokeDecreaseRate = 0.3; //stroke weight decreasing rate
 
     ArrayList<Ripple> ripples = new ArrayList<Ripple>();
   
@@ -69,7 +73,7 @@ class RippleEffect implements Effect
       PVector screenPos = FootFallField.calibration.screenPosForReading( foot ); //<>//
       synchronized( ripples )  
       {
-        ripples.add( new Ripple(screenPos.x,screenPos.y,20,20,int(random(0,255)),int(random(0,255)),int(random(0,255)),250));
+        ripples.add( new Ripple(screenPos.x,screenPos.y,20,30,int(random(0,255)),int(random(0,255)),int(random(0,255)),250));
       }
  
     }
