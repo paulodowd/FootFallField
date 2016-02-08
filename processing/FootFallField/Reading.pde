@@ -1,7 +1,13 @@
+
 // Represents one lidar reading, with range and angle
+
+// We use this for two things:
+//  - The array of readings, which represents all the lidar points
+//  - The array of feet, which aggregates consecutive lidar points to provide one Reading for each real-world object
+
 class Reading
 {
-  // Copy these three from foot_fall_field_lidar
+  // Copy these three from foot_fall_field_lidar 
   final static int MICROSTEPS = 8;
   final static int STEPS_PER_REV = 200;
   final static long ticksPerRev = MICROSTEPS * STEPS_PER_REV * 8;

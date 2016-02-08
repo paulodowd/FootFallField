@@ -1,5 +1,5 @@
 
-// represents one person inferred from a series of feet
+// represents one person inferred from a series of feet, with a velocity so we can predict them
 
 class Person
 {

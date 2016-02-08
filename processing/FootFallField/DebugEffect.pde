@@ -1,5 +1,5 @@
 
-// Draw a blob for each Foot
+// Draw a blob for each reading, foot, and person so we can see what we are detecting
 
 class DebugEffect extends Effect
 {

@@ -1,8 +1,12 @@
 
-// manages maintaining the list of feet
+// manages parsing serial data from the lidar and maintaining the list of feet
 
 class FootManager
 {
+  public ArrayList<Reading> readings = new ArrayList<Reading>();   // All the Lidar readings
+  public ArrayList<Reading> feet = new ArrayList<Reading>();       // Foot locations inferred from clusters of Lidar points
+
+
   Serial myPort;
   Background background = new Background();
  
@@ -27,8 +31,8 @@ class FootManager
   void makeTestFeet()
   {
       // make some test feet
-    FootFallField.feet.add(new Reading(-180, 195, millis() - 500,0));
-    FootFallField.feet.add(new Reading(-140, 205, millis(),0 ));
+    feet.add(new Reading(-180, 195, millis() - 500,0));
+    feet.add(new Reading(-140, 205, millis(),0 ));
   }
   
   void draw()
@@ -54,7 +58,7 @@ class FootManager
       FootFallField.personManager.cleanBeforeRotation( rotationCounter ); 
     }
     
-    for( Reading reading : FootFallField.feet)
+    for( Reading reading : feet)
       if( now - reading.millis > 1000 )    // move each foot every second
       {
         reading.x += 80;
@@ -168,14 +172,14 @@ void parseBuffer()
       rotationCounter++;
       
       // Clean out old data from last rotation, if we didn't already clean it up in addReading()
-      cleanReadingsBeforeRotation( FootFallField.readings, rotationCounter ); 
-      cleanReadingsBeforeRotation( FootFallField.feet, rotationCounter ); 
+      cleanReadingsBeforeRotation(readings, rotationCounter ); 
+      cleanReadingsBeforeRotation( feet, rotationCounter ); 
       FootFallField.personManager.cleanBeforeRotation( rotationCounter ); 
 
        print("got ");
-       print(FootFallField.readings.size());
+       print(readings.size());
        println(" readings");
-       print(FootFallField.feet.size());
+       print(feet.size());
        println(" feet");
      
        //<>//
@@ -186,7 +190,7 @@ void parseBuffer()
       //reading.printDiag();
       // add a new foot
 
-      addReading( reading, FootFallField.readings );
+      addReading( reading, readings );
       updateCurrentFoot(reading); //<>//
      
     }
@@ -218,9 +222,9 @@ void updateCurrentFoot( Reading reading )
       int range = (currentFootStartRange + currentFootEndRange)/2; 
       int tick = (currentFootStartTick + currentFootEndTick) / 2;  // in the middle
       Reading newFoot = new Reading( range, tick, reading.rotationCounter );
-      synchronized( FootFallField.feet )
+      synchronized( feet )
       {
-        addReading( newFoot, FootFallField.feet );
+        addReading( newFoot, feet );
         FootFallField.personManager.updateForFoot( newFoot );
         notifyNewFoot( reading );
       }

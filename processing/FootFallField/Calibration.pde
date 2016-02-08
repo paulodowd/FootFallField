@@ -1,7 +1,9 @@
 
-// Converts between Foot coordinates and window coordinates, must be set up at runtime to align lidar objects with projected image
+// Converts between Reading coordinates and window coordinates, must be set up at the start of each run to align lidar objects with projected image
+// If CalibrationEffect has not yet run, uses an uncalibrated mapping from lidar x,y to a space lidarWidth by lidarDepth
+// Not used when running in demoMode.
 
-// TODO - needs to be set up by a calibration effect that displays markers near the corners to be stood on
+// TODO - maths doesn't work right yet.
 
 class Calibration
 {
@@ -22,7 +24,7 @@ class Calibration
     screenWidth = w;
     screenHeight = h;
     
-    test();
+    //test(); // for debugging calibrartion using hardcoded points
   }
   
   void test()

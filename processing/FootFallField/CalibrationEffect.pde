@@ -1,5 +1,7 @@
 
-// Calibrate the Calibration so projector matches lidar
+// An Effect used to calibrate the Calibration so projected graphics can align with real-world object detected by lidar
+// Will run once at boot time, shows a series of points which user needs to stand on to provide a reference
+
 
 class CalibrationEffect extends Effect
 {

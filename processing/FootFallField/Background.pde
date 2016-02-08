@@ -3,8 +3,8 @@
 class Background
 {
   final static int backgroundSegments = 90; // number of segments of background range we'll accumulate over the 180 degrees of scan
-  float backgroundRangeAtAngle[];             // The rolling-average range as a function of angle
-  final static float backgroundSamples = 500; // number of samples we'll rolling-average over
+  float backgroundRangeAtAngle[];             // The rolling-average range at each angle
+  final static float backgroundSamples = 500; // number of samples we'll rolling-average over, controls how long it takes for us to treat a stationary object as the background
   
   
   Background()

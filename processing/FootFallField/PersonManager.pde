@@ -1,3 +1,7 @@
+
+// Infers the people from the feet
+// A series of steps near each other will be treated as a single person
+
 class PersonManager
 {
   public ArrayList<Person> people = new ArrayList<Person>();

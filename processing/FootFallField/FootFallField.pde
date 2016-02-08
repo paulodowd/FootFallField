@@ -27,17 +27,15 @@ Effect calibrationEffect;
 Effect currentEffect;
 Effect debugEffect;
 
-public static Calibration calibration;
-public static ArrayList<Reading> readings = new ArrayList<Reading>(); // All the Lidar readings
-public static ArrayList<Reading> feet = new ArrayList<Reading>();     // Foot locations inferred from clusters of Lidar points
+public static Calibration calibration;                                  // Manages mapping from lidar space to screen space
 
-public static FootManager footManager;
-public static PersonManager personManager;
+public static FootManager footManager;                                  // Manages serial comms, maintains lists of readings and feet, makes simulated feet in demo mode
+public static PersonManager personManager;                              // Manages an array of people inferred from feet
 
 void setup() 
 {
   
-  size(1200,700); //fixed canvas size
+  size(1200,700); //fixed canvas size to match projector
   
   calibration = new Calibration( width, height );
   
@@ -73,22 +71,22 @@ void draw()
         calibrationEffect.draw(readings, feet, personManager.people);
     */
   if( currentEffect != null )
-    currentEffect.draw(readings, feet, personManager.people);
+    currentEffect.draw(footManager.readings, footManager.feet, personManager.people);
     
   if( debugEffect != null )
-    debugEffect.draw(readings, feet, personManager.people); // draw some blobs so we can see feet, people etc
+    debugEffect.draw(footManager.readings, footManager.feet, personManager.people); // draw some blobs so we can see feet, people etc
    
   footManager.draw();                  // draws the background
   
 }
 
-void notifyNewFoot( Reading foot )
+void notifyNewFoot( Reading foot ) // A new foot arrived, tell the current effect to handle it
 {
   if( currentEffect != null )
     currentEffect.notifyNewFoot( foot );
 }
 
-void serialEvent (Serial port) 
+void serialEvent (Serial port)     // Some bytes arrived from the lidar, tell the foot amanger to handle them
 {
   footManager.serialEvent(port);
 }

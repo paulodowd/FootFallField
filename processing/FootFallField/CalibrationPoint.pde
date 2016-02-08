@@ -1,3 +1,5 @@
+
+// A pair of foot position and screen position used during calibration
 public class CalibrationPoint
   {
     Reading foot;
