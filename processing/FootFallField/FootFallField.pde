@@ -26,6 +26,7 @@ public static boolean usingMirror = false; // set true to run when projecting vi
 Effect calibrationEffect;
 Effect currentEffect;
 Effect debugEffect;
+MenuEffect menuEffect;
 
 public static Calibration calibration;                                  // Manages mapping from lidar space to screen space
 
@@ -46,10 +47,17 @@ void setup()
   
   debugEffect = new DebugEffect();
   
-  if( ! demoMode )
-    calibrationEffect = new CalibrationEffect();
+
+   calibrationEffect = new CalibrationEffect();
+   
+   
+   menuEffect = new MenuEffect();
+   // Add each effect to the menu here so it can offer them as choices 
+   menuEffect.addEffect(new LineEffect());
+   menuEffect.addEffect(new RippleEffect());
     
-   changeEffect(new RippleEffect());
+
+   changeEffect(new LineEffect());
 }
 
 void changeEffect(Effect effect)
@@ -65,20 +73,64 @@ void draw()
     // clear to hide old blobs
     fill( 0 );
     rect( 0,0, width, height );
-    /*
-    if( ! demoMode )
-      if( ! calibration.isCalibrated())  
-        calibrationEffect.draw(readings, feet, personManager.people);
-    */
-  if( currentEffect != null )
-    currentEffect.draw(footManager.readings, footManager.feet, personManager.people);
+
+    doMouseFeet();
     
+    boolean doCalibration = false;
+    
+    if( ! demoMode )
+      if( ! calibration.isCalibrated())
+        doCalibration = true;
+        
+   if( doCalibration )
+   {
+        calibrationEffect.draw(footManager.readings, footManager.feet, personManager.people);
+   }
+   else
+   {
+      
+      if( currentEffect != null )
+        currentEffect.draw(footManager.readings, footManager.feet, personManager.people);
+        
+      menuEffect.draw(footManager.readings, footManager.feet, personManager.people);
+
+   }
+   
   if( debugEffect != null )
     debugEffect.draw(footManager.readings, footManager.feet, personManager.people); // draw some blobs so we can see feet, people etc
    
   footManager.draw();                  // draws the background
   
 }
+
+Reading mouseFoot = null;
+
+void doMouseFeet()
+{
+  if( ! demoMode )
+    return;
+    
+  synchronized( footManager.feet )
+  {
+    if( mouseFoot != null )
+    {
+      footManager.feet.remove( mouseFoot );
+      mouseFoot = null;
+    }
+    
+      
+    if( mousePressed )
+    {
+      mouseFoot = calibration.readingForScreenPos( mouseX, mouseY);
+      footManager.feet.add( mouseFoot );
+    }
+
+  }
+  
+  if( mousePressed )
+    notifyNewFoot( mouseFoot );
+}
+
 
 void notifyNewFoot( Reading foot ) // A new foot arrived, tell the current effect to handle it
 {

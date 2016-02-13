@@ -66,6 +66,17 @@ class Calibration
     return - lidarWidth/2;
   }
   
+  Reading readingForScreenPos( float sx, float sy ) // only works uncalibrated, used for mouse-driven fake foot
+  {
+    float rx, ry;
+    
+    rx = (sx - screenWidth/2) * lidarWidth / screenWidth;
+    ry = (screenHeight - sy) * lidarDepth / screenHeight;
+    
+    return new Reading( (int)rx, (int)ry, millis(), 0 );
+    
+  }
+  
   PVector screenPosForReading( Reading reading )
   {
     return screenPosForXY( reading.x, reading.y );
@@ -111,12 +122,16 @@ class Calibration
     Reading c = points.get(2).foot;
     Reading d = points.get(3).foot;
     
+    
+
     float C = (float)(a.y - py) * (d.x - px) - (float)(a.x - px) * (d.y - py); //<>//
       float B = (float)(a.y - py) * (c.x - d.x) + (float)(b.y - a.y) * (d.x - px) - (float)(a.x - px) * (c.y - d.y) - (float)(b.x - a.x) * (d.y - py);
       float A = (float)(b.y - a.y) * (c.x - d.x) - (float)(b.x - a.x) * (c.y - d.y);
 
       float D = B * B - 4 * A * C;
 
+    println("");
+    print("CBAD: ");
      print( C );
      print(", ");
      print( B );
@@ -133,13 +148,17 @@ class Calibration
 
       float v = (px - p1x) / (p2x - p1x);
       
+      print("uv: ");
       print( u );
      print(", ");
+     println( v );
+     
+     print("p1x p2x: ");
      print( p1x );
      print( ", " );
-      print( p2x );
-      print(", ");
-     println( v );
+      println( p2x );
+      
+     
      
       // u and v are normalised so 0->1 maps to the side of the rectangle
       // now calculate the screen coordinates for p
@@ -147,6 +166,11 @@ class Calibration
       float sx = a.x + u * (b.x - a.x);
       float sy = a.y + v * (c.y - a.y);
       
+      print("sx sy: ");
+      print( sx );
+     print(", ");
+     println( sy );
+     
       return new PVector( (int) sx, (int) sy );
       
     

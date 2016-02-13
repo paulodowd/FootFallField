@@ -31,7 +31,7 @@ class FootManager
   void makeTestFeet()
   {
       // make some test feet
-    feet.add(new Reading(-180, 195, millis() - 500,0));
+    feet.add(new Reading(-180, 195, millis() - 500, 0));
     feet.add(new Reading(-140, 205, millis(),0 ));
   }
   

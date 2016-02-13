@@ -51,6 +51,11 @@ class Reading
     return angle;
   }
   
+  float distanceFrom( float _x, float _y )
+  {
+    return sqrt((x - _x)*(x - _x) + (y - _y)*(y - _y));
+  }
+  
   void printDiag()
   {
     println("Foot:");

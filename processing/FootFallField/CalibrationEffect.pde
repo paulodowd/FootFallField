@@ -36,11 +36,11 @@ class CalibrationEffect extends Effect
     
     if( now - startMillis < 5000 ) // 2 secs to get into position
     {
-      drawMarker( markerPos, true );
+      drawMarker( markerPos, true, false );
       return;
     }
     
-    drawMarker( markerPos, false );
+    drawMarker( markerPos, false, false );
     
       
       
@@ -76,11 +76,8 @@ class CalibrationEffect extends Effect
     // draw completed points with an outline circle
     for( CalibrationPoint point : points )
     {
-      drawMarker( point.screenPos, false );
-      strokeWeight(10);
-      stroke(255); // white outline circle to show a measured point
-      fill(0,0);
-      ellipse(point.screenPos.x, point.screenPos.y, 120,120);
+      drawMarker( point.screenPos, false, true );
+      
     }
   }
   void nextPoint()
@@ -103,7 +100,7 @@ class CalibrationEffect extends Effect
 
   }
   
-  void drawMarker( PVector markerPos, boolean fill )
+  void drawMarker( PVector markerPos, boolean fill, boolean circle )
   {
     
     
@@ -123,6 +120,14 @@ class CalibrationEffect extends Effect
       
     arc(markerPos.x, markerPos.y, 80, 80, 0, HALF_PI, PIE);
     arc(markerPos.x, markerPos.y, 80, 80, PI, PI+HALF_PI, PIE);
+    
+    if( circle )
+    {
+      strokeWeight(10);
+      stroke(255); // white outline circle to show a measured point
+      fill(0,0);
+      ellipse(markerPos.x, markerPos.y, 120,120);
+    }
   }
   
 }
