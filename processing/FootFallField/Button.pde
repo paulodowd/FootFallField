@@ -1,5 +1,8 @@
 class Button
 {
+  final static int HOLD_TIME = 3000; //foot must be in place for this long
+  
+    PImage image;
     float x;   // in lidar space in cm
     float y;
     float diameter; 
@@ -15,8 +18,11 @@ class Button
     
     int state;
     
-    public Button( float _x, float _y, float _diameter )
+    public Button( String imageName, float _x, float _y, float _diameter )
     {
+      if( imageName != null )
+      image = loadImage(imageName);
+
       x = _x;
       y = _y;
       diameter = _diameter;
@@ -76,7 +82,7 @@ class Button
           if( ! gotFoot )
             changeState( WAITING );
           else
-            if( now - stateStartMillis > 3000 )
+            if( now - stateStartMillis > HOLD_TIME )
               changeState( SHOWING_PRESSED );
         break;
             
@@ -101,35 +107,61 @@ class Button
   void drawState()
   {
     
-   float angle = 0;
+   float angle;
+   float segmentWidth;
+   float timeInState = (float) (millis() - stateStartMillis);
    
+   imageMode(CENTER);
+   
+
    if( state != LOCKED && state != SHOWING_PRESSED) // rotate all the time till we are locked
-   {
-     angle = (float) (millis() - stateStartMillis) * PI / 2000;
-   }
+     angle = timeInState * PI / 2000;
+   else
+     angle = 0;
     
+    switch( state )
+      {
+        case WAITING:   // Not seen a foot yet (or seen one and given up)
+          segmentWidth = HALF_PI;
+        break;
+        
+        case TIMING:    // Foot must stay put
+          segmentWidth = 0.1 + 0.8 * timeInState * PI / HOLD_TIME;
+        break;
+            
+        case SHOWING_PRESSED:  
+        case LOCKED:
+        default:
+          segmentWidth = HALF_PI;
+        break;
+        
+      }
     if( state == WAITING ) // show filled during the wait time, hollow at other times
     {
       strokeWeight(0);
       stroke(0); 
-      fill(255); 
+      fill(128); 
     }
     else
     {
       strokeWeight(10);
-      stroke(255); 
+      stroke(128); 
       fill(0);  
     }
       
-    arc(screenPos.x, screenPos.y, screenDiameter, screenDiameter, 0 + angle, HALF_PI+ angle, PIE);
-    arc(screenPos.x, screenPos.y, screenDiameter, screenDiameter, PI + angle, PI+HALF_PI+ angle, PIE);
+    arc(screenPos.x, screenPos.y, screenDiameter, screenDiameter, 0 + angle, segmentWidth+ angle, PIE);
+    arc(screenPos.x, screenPos.y, screenDiameter, screenDiameter, PI + angle, PI+segmentWidth+ angle, PIE);
     
     if( state == SHOWING_PRESSED || state == LOCKED )
     {
       strokeWeight(10);
-      stroke(255); // white outline circle to show a measured point
+      stroke(255); // white outline circle to show pressing is done
       fill(0,0);
       ellipse(screenPos.x, screenPos.y, screenDiameter * 1.5 ,screenDiameter * 1.5);
     }
+    
+    if( image != null )
+     image(image, screenPos.x, screenPos.y, diameter, diameter); //TODO - why are images drawn too small ?
+   
   }
 }

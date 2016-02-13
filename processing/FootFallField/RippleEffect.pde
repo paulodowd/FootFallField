@@ -27,6 +27,8 @@ class RippleEffect extends Effect
 
     ArrayList<Ripple> ripples = new ArrayList<Ripple>();
   
+  String imageName() { return "ripple.png"; }
+
 
   void draw(ArrayList<Reading> readings, ArrayList<Reading> feet, ArrayList<Person> people)
   {

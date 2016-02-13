@@ -9,7 +9,7 @@ class MenuEffect extends Effect
   ArrayList<Effect> effects = new ArrayList<Effect>();
   HashMap<Effect,Button> effectButtons = new HashMap<Effect,Button>();
   
-  Button initButton = new Button( 0, 20, 20 );
+  Button initButton = new Button( null, 0, 20, 20 );
   boolean active = false;
   int activationStart = 0;
   
@@ -71,7 +71,7 @@ class MenuEffect extends Effect
     {
       for( Effect effect : effects )
       {
-        effectButtons.put( effect, new Button( x,y,30 ));
+        effectButtons.put( effect, new Button( effect.imageName(), x,y,30 ));
         x += 40;
       }
     }

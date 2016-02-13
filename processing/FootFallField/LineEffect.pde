@@ -25,6 +25,7 @@ class LineEffect extends Effect
 
   ArrayList<Line> lines = new ArrayList<Line>();
   
+  String imageName() { return "line.png"; }
 
   void draw(ArrayList<Reading> readings, ArrayList<Reading> feet, ArrayList<Person> people)
   {

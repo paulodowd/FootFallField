@@ -4,6 +4,8 @@
 
 abstract class Effect 
 {
+  String imageName() { return null; }
+  
   void start(){}
   
   abstract void draw(                               // Draw the effect based on: 
