@@ -36,7 +36,8 @@ public static PersonManager personManager;                              // Manag
 void setup() 
 {
   
-  size(1200,700); //fixed canvas size to match projector
+  //size(1200,700); //fixed canvas size to match projector
+  fullScreen();
   
   calibration = new Calibration( width, height );
   
