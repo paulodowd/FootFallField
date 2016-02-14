@@ -36,8 +36,9 @@ public static PersonManager personManager;                              // Manag
 void setup() 
 {
   
-  size(1200,700); //fixed canvas size to match projector
-  
+  //size(1200,700); //fixed canvas size to match projector
+  fullScreen();
+
   calibration = new Calibration( width, height );
   
   footManager = new FootManager();
@@ -57,7 +58,7 @@ void setup()
    menuEffect.addEffect(new RippleEffect());
    menuEffect.addEffect(new SplatEffect()); 
 
-   changeEffect(new SplatEffect());
+   changeEffect(menuEffect.effects.get(0));
 }
 
 void changeEffect(Effect effect)
@@ -77,11 +78,11 @@ void draw()
     doMouseFeet();
     
     boolean doCalibration = false;
-    
+    /*
     if( ! demoMode )
       if( ! calibration.isCalibrated())
         doCalibration = true;
-        
+     */   
    if( doCalibration )
    {
         calibrationEffect.draw(footManager.readings, footManager.feet, personManager.people);
@@ -107,8 +108,8 @@ Reading mouseFoot = null;
 
 void doMouseFeet()
 {
-  if( ! demoMode )
-    return;
+  //if( ! demoMode )
+  //  return;
     
   synchronized( footManager.feet )
   {
