@@ -20,7 +20,6 @@ class Splat
 class SplatEffect extends Effect
 {
   ArrayList<Splat> splats = new ArrayList<Splat>();
-  
   String imageName() { return "splat.png"; }
 
   void draw(ArrayList<Reading> readings, ArrayList<Reading> feet, ArrayList<Person> people)
@@ -30,13 +29,11 @@ class SplatEffect extends Effect
 
     synchronized( splats )  
     {
-      for( int i = 0; i < splats.size();  )
+      for( int i = 0; i < splats.size(); i++ )
       {
         Splat splat = splats.get(i);
         //just continue to render
-        //println("rendering splat "+i+" at "+splat.x+" "+splat.y+" "+splat.d+" R "+splat.sr+" G "+splat.sg+" B "+splat.sb+" A "+splat.sa);    
         strokeWeight(splat.sw);
-        //fill(255,0);
         stroke(splat.sr, splat.sg, splat.sb, splat.sa);
         ellipse(splat.x, splat.y, splat.d, splat.d);           
       }
@@ -56,23 +53,18 @@ class SplatEffect extends Effect
       }else{
         synchronized( splats )  
         {
-          for( int i = 0; i < splats.size();  )
+          for( int i = 0; i < splats.size();i++)
           {
-          Splat splat = splats.get(i);
-          //if position is within the splat, remove it and generate a new one
-            //println("screen pos "+screenPos.x+" greater than "+(splat.x + splat.d));
-            if(screenPos.x > (splat.x + splat.d)  && screenPos.x > (splat.x - splat.d) && 
-              screenPos.y > splat.y + splat.y && screenPos.y > splat.y - splat.d ){
+            Splat splat = splats.get(i);
+            //if position is within the splat, remove it
+            //there's only ever one splat so the size()==0 coe above will generate a new one
+            if(screenPos.x < (splat.x + splat.d)  && screenPos.x > (splat.x - splat.d) && 
+                screenPos.y < (splat.y + splat.d) && screenPos.y > (splat.y - splat.d) ){
+              //println("HIT!");
               splats.remove(i);
-            }else{ 
-              int x = int(random(0, width));
-              int y = int(random(0, height));
-              //just make a random one? will this work?
-              splats.add( new Splat(x,y,20,30,int(random(0,255)),int(random(0,255)),int(random(0,255)),250));
             }
           }
         }
-      }
-      
+      } 
    }
 }
