@@ -82,8 +82,9 @@ class FootManager
     println("Serial ports are");  
     println(Serial.list()); // print the available serial ports
     
-    String portName = Serial.list()[5]; //change the 0 to a 1 or 2 etc. to match your port
-    
+    String portName;
+    //portName = Serial.list()[5]; //change the 0 to a 1 or 2 etc. to match your port
+    portName = "/dev/ttyUSB0";
     myPort = new Serial(context, portName, 115200);
     myPort.buffer(5);
   }

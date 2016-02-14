@@ -19,7 +19,7 @@
 
 import processing.serial.*;
 
-public static boolean demoMode = true; // set true to run without a real lidar, with simulated footsteps
+public static boolean demoMode = false; // set true to run without a real lidar, with simulated footsteps
 public static boolean usingMirror = false; // set true to run when projecting via a mirror to get left/right swap
 
 
@@ -36,8 +36,8 @@ public static PersonManager personManager;                              // Manag
 void setup() 
 {
   
-  size(1200,700); //fixed canvas size to match projector
-  
+  //size(1200,700); //fixed canvas size to match projector
+  fullScreen();
   calibration = new Calibration( width, height );
   
   footManager = new FootManager();
@@ -107,8 +107,8 @@ Reading mouseFoot = null;
 
 void doMouseFeet()
 {
-  if( ! demoMode )
-    return;
+  //if( ! demoMode )
+  //  return;
     
   synchronized( footManager.feet )
   {
