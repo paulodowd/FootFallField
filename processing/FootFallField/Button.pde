@@ -111,9 +111,7 @@ class Button
    float segmentWidth;
    float timeInState = (float) (millis() - stateStartMillis);
    
-   imageMode(CENTER);
-   
-
+ 
    if( state != LOCKED && state != SHOWING_PRESSED) // rotate all the time till we are locked
      angle = timeInState * PI / 2000;
    else
@@ -149,6 +147,7 @@ class Button
       fill(0);  
     }
       
+    ellipseMode(CENTER); 
     arc(screenPos.x, screenPos.y, screenDiameter, screenDiameter, 0 + angle, segmentWidth+ angle, PIE);
     arc(screenPos.x, screenPos.y, screenDiameter, screenDiameter, PI + angle, PI+segmentWidth+ angle, PIE);
     
@@ -161,7 +160,19 @@ class Button
     }
     
     if( image != null )
-     image(image, screenPos.x, screenPos.y, diameter, diameter); //TODO - why are images drawn too small ?
+    {
+      /*
+      strokeWeight(10);
+      stroke(255); // white outline circle to show pressing is done
+      fill(0,0);
+      
+      rect( screenPos.x-screenDiameter/2, screenPos.y-screenDiameter/2, screenDiameter, screenDiameter); 
+      */
+      
+      imageMode(CENTER);
+  
+      image(image, screenPos.x, screenPos.y, screenDiameter*0.7, screenDiameter*0.7); 
+    }
    
   }
 }

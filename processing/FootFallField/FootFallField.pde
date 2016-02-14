@@ -19,7 +19,7 @@
 
 import processing.serial.*;
 
-public static boolean demoMode = false; // set true to run without a real lidar, with simulated footsteps
+public static boolean demoMode = true; // set true to run without a real lidar, with simulated footsteps
 public static boolean usingMirror = false; // set true to run when projecting via a mirror to get left/right swap
 
 
@@ -38,6 +38,7 @@ void setup()
   
   //size(1200,700); //fixed canvas size to match projector
   fullScreen();
+
   calibration = new Calibration( width, height );
   
   footManager = new FootManager();
@@ -55,9 +56,10 @@ void setup()
    // Add each effect to the menu here so it can offer them as choices 
    menuEffect.addEffect(new LineEffect());
    menuEffect.addEffect(new RippleEffect());
+   menuEffect.addEffect(new SplatEffect());
     
 
-   changeEffect(new LineEffect());
+   changeEffect(menuEffect.effects.get(0));
 }
 
 void changeEffect(Effect effect)
@@ -77,11 +79,11 @@ void draw()
     doMouseFeet();
     
     boolean doCalibration = false;
-    
+    /*
     if( ! demoMode )
       if( ! calibration.isCalibrated())
         doCalibration = true;
-        
+     */   
    if( doCalibration )
    {
         calibrationEffect.draw(footManager.readings, footManager.feet, personManager.people);
