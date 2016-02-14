@@ -67,7 +67,7 @@ class SplatEffect extends Effect
             }else{ 
               int x = int(random(0, width));
               int y = int(random(0, height));
-              //just make a random one? will this work?
+              //just make a random one? will this work? //<>//
               splats.add( new Splat(x,y,20,30,int(random(0,255)),int(random(0,255)),int(random(0,255)),250));
             }
           }

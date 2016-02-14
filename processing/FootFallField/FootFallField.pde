@@ -55,9 +55,10 @@ void setup()
    // Add each effect to the menu here so it can offer them as choices 
    menuEffect.addEffect(new LineEffect());
    menuEffect.addEffect(new RippleEffect());
+   menuEffect.addEffect(new SplatEffect());
     
 
-   changeEffect(new LineEffect());
+   changeEffect(menuEffect.effects.get(0));
 }
 
 void changeEffect(Effect effect)
