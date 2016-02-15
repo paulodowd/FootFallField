@@ -13,61 +13,38 @@ class CalibrationEffect extends Effect
   int n = -1;
   
   ArrayList<CalibrationPoint> points = new ArrayList<CalibrationPoint>();
+  
+  Button button = null;
 
     
   void draw(ArrayList<Reading> readings, ArrayList<Reading> feet, ArrayList<Person> people)
   {
-    int now = millis();
-    
-    if( n == -1 || now - startMillis > 10000 ) // time to change
-    {
+
+    if( n == -1 ) // first time round
        nextPoint();
-      
-      if( n > 4 )
-      {
-        n = 0; // start again
-        points = new ArrayList<CalibrationPoint>();
-      }
-    }
+
 
     drawExistingPoints();
     
-    PVector markerPos = markerForN( n );
+    button.draw(readings, feet, people);
     
-    if( now - startMillis < 5000 ) // 2 secs to get into position
+    if( button.isLocked())
     {
-      drawMarker( markerPos, true, false );
-      return;
-    }
-    
-    drawMarker( markerPos, false, false );
-    
+      points.add( new CalibrationPoint( button.getReading(), button.screenPos ));
       
-      
-    synchronized( feet )  
-    {
-      if( feet.size() != 1 )
-      {
-        return;
-      }
-      
-      
-        
-      
-      Reading reading = feet.get(0);
-      points.add( new CalibrationPoint( reading, markerPos ));
       if( points.size() == 4 )
       {
+        
         FootFallField.calibration.setPoints( points );
         
-        return;
+        return; // all done
       }
       nextPoint();
-        
- 
     }
     
     
+      
+   
     
   }
   
@@ -83,8 +60,15 @@ class CalibrationEffect extends Effect
   void nextPoint()
   {
     int now = millis();
-     n++;
-      startMillis = now;
+    n++;
+    startMillis = now;
+    if( n > 4 )
+    {
+      n = 0; // start again
+      points = new ArrayList<CalibrationPoint>();
+    }
+    
+    button = new Button( markerForN( n ));
   }
   
   PVector markerForN( int n )

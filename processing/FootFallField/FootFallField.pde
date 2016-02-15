@@ -22,6 +22,7 @@ import processing.serial.*;
 public static boolean demoMode = true; // set true to run without a real lidar, with simulated footsteps
 public static boolean usingMirror = false; // set true to run when projecting via a mirror to get left/right swap
 
+public static boolean debugCalibrate = false; // set to debug calibration without the real test rig
 
 Effect calibrationEffect;
 Effect currentEffect;
@@ -78,11 +79,11 @@ void draw()
     doMouseFeet();
     
     boolean doCalibration = false;
-    /*
-    if( ! demoMode )
+    
+    if( debugCalibrate || ! demoMode )
       if( ! calibration.isCalibrated())
-        doCalibration = true;
-     */   
+          doCalibration = true;
+        
    if( doCalibration )
    {
         calibrationEffect.draw(footManager.readings, footManager.feet, personManager.people);

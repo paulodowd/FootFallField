@@ -9,6 +9,8 @@ class Button
     
     PVector screenPos;
     int screenDiameter;
+    boolean forCalibration = false; // controls special behaviour for calibration
+    
     
     final static int WAITING = 0;   // Not seen a foot yet (or seen one and given up)
     final static int TIMING = 1;    // Foot must stay put
@@ -35,6 +37,22 @@ class Button
       state = WAITING;
     }
     
+    public Button( PVector _screenPos ) // special constructor for use in calibration
+    {
+      forCalibration = true;
+      x = -1;  // doon't know these yes, wil make them up from the first foot we see
+      y = -1;
+      diameter = 40;
+      
+      screenPos = _screenPos;
+      
+      screenDiameter = (int) FootFallField.calibration.screenDistanceNear( x, y, diameter );
+      
+      stateStartMillis = millis();
+   
+      state = WAITING;
+    }
+    
    void draw(ArrayList<Reading> readings, ArrayList<Reading> feet, ArrayList<Person> people)
    {
       int now = millis();
@@ -44,6 +62,11 @@ class Button
       drawState();
    }
     
+   Reading getReading() // a way to read out x, y for calibration purposes
+   {
+     return new Reading( (int) x, (int) y, millis(), 0 );
+   }
+   
    boolean isLocked()
    {
      return state == LOCKED ;
@@ -58,9 +81,21 @@ class Button
   {
     synchronized( feet )
     {
+      if( forCalibration )
+      {
+        if( feet.size() ==1 ) // must have exactly one foot for calibration
+        {
+          x = feet.get(0).x;
+          y = feet.get(0).y;
+          return true;
+        }
+      }
+      else
+      {
       for( Reading foot : feet )
         if( foot.distanceFrom( x, y ) < diameter/2 ) 
           return true;
+      }
     }
     
     return false;

@@ -24,8 +24,9 @@ class FootManager
   
   FootManager()
   {
-    if( demoMode )
-      makeTestFeet();
+    if( ! debugCalibrate )
+      if( demoMode )
+        makeTestFeet();
   }
   
   void makeTestFeet()
