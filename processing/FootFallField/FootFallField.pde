@@ -104,7 +104,7 @@ void draw()
   
 }
 
-Reading mouseFoot = null;
+
 int lastMouseFootTime = 0;
 
 void doMouseFeet()
@@ -112,27 +112,13 @@ void doMouseFeet()
   //if( ! demoMode )
   //  return;
     
-  synchronized( footManager.feet )
-  {
-    if( mouseFoot != null )
-    {
-      footManager.feet.remove( mouseFoot );
-      mouseFoot = null;
-    }
-    
-      
-    if( mousePressed )
-    {
-      mouseFoot = calibration.readingForScreenPos( mouseX, mouseY);
-      footManager.feet.add( mouseFoot );
-    }
-
-  }
-  
-  if( mousePressed && millis() - lastMouseFootTime > 500)
+   
+  if( mousePressed && millis() - lastMouseFootTime > 500) // don't make mouse feet too often
   {
     lastMouseFootTime = millis();
-    notifyNewFoot( mouseFoot );
+    Reading mouseFoot = calibration.readingForScreenPos( mouseX, mouseY);
+    footManager.addMouseFoot( mouseFoot );
+
   }
 }
 

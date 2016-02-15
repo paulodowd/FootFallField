@@ -47,6 +47,25 @@ class FootManager
   
   int testRotationMillis = 0;
 
+  Reading lastMouseFoot = null;
+  void addMouseFoot( Reading reading ) // add a foot from a mouse click
+  {
+      if( lastMouseFoot!= null )
+        feet.remove( lastMouseFoot );
+        
+      lastMouseFoot = reading;  
+      reading.millis = millis();
+      reading.rotationCounter = rotationCounter;
+        
+      feet.add(reading);
+      //updateCurrentFoot(reading);
+      
+      
+      FootFallField.personManager.updateForFoot( reading );
+      notifyNewFoot( reading );
+  }
+  
+  
   void moveTestFeet()
   {
     int now = millis();
@@ -60,18 +79,19 @@ class FootManager
     
     for( Reading reading : feet)
       if( now - reading.millis > 1000 )    // move each foot every second
-      {
-        reading.x += 80;
-        if( reading.x > FootFallField.calibration.maxLidarX())
-          reading.x = FootFallField.calibration.minLidarX() + reading.x - FootFallField.calibration.maxLidarX();
+        if( reading != lastMouseFoot )
+        {
+          reading.x += 80;
+          if( reading.x > FootFallField.calibration.maxLidarX())
+            reading.x = FootFallField.calibration.minLidarX() + reading.x - FootFallField.calibration.maxLidarX();
+            
+          reading.millis = now;
+          reading.rotationCounter = rotationCounter;
           
-        reading.millis = now;
-        reading.rotationCounter = rotationCounter;
-        
-        
-        FootFallField.personManager.updateForFoot( reading );
-        notifyNewFoot( reading );
-      }
+          
+          FootFallField.personManager.updateForFoot( reading );
+          notifyNewFoot( reading );
+        }
   }
   
   void openPort(FootFallField context)
