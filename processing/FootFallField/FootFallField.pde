@@ -105,6 +105,7 @@ void draw()
 }
 
 Reading mouseFoot = null;
+int lastMouseFootTime = 0;
 
 void doMouseFeet()
 {
@@ -128,8 +129,11 @@ void doMouseFeet()
 
   }
   
-  if( mousePressed )
+  if( mousePressed && millis() - lastMouseFootTime > 500)
+  {
+    lastMouseFootTime = millis();
     notifyNewFoot( mouseFoot );
+  }
 }
 
 
