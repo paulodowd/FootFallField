@@ -121,6 +121,9 @@ void doMouseFeet()
     footManager.addMouseFoot( mouseFoot );
 
   }
+  
+  if( ! mousePressed )
+    footManager.removeMouseFoot();
 }
 
 

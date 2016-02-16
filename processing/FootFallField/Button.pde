@@ -83,19 +83,27 @@ class Button
     {
       if( forCalibration )
       {
-        if( feet.size() ==1 ) // must have exactly one foot for calibration
+        if( state == WAITING && millis() - stateStartMillis < 3000 ) // ignore feet for first 3 secs to give time to get there
+          return false;
+          
+        if( feet.size() == 1 && state == WAITING && y < 0) // must have exactly one foot for calibration
         {
-          x = feet.get(0).x;
+          x = feet.get(0).x; // set x & y from the first foot we see. foot will have to stay in place for the button time to be confirmed
           y = feet.get(0).y;
           return true;
         }
+        
+        if( y < 0 )
+          return false; // don't have a position yet. don't check for matches
       }
-      else
-      {
+      
+
       for( Reading foot : feet )
         if( foot.distanceFrom( x, y ) < diameter/2 ) 
+        {
+          //TODO - if forCalibration, could rolling-average x,y with the measured position to get a better fix
           return true;
-      }
+        }
     }
     
     return false;
@@ -135,6 +143,10 @@ class Button
    
   void changeState( int newState )
   {
+    if( forCalibration )
+      if( newState == WAITING )
+        y = -1; // forget our position when we go back to waiting, next single foot will set it again
+        
     state = newState;
     stateStartMillis = millis();
   }

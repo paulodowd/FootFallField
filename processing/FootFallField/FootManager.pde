@@ -51,8 +51,7 @@ class FootManager
   Reading lastMouseFoot = null;
   void addMouseFoot( Reading reading ) // add a foot from a mouse click
   {
-      if( lastMouseFoot!= null )
-        feet.remove( lastMouseFoot );
+      removeMouseFoot();
         
       lastMouseFoot = reading;  
       reading.millis = millis();
@@ -66,6 +65,11 @@ class FootManager
       notifyNewFoot( reading );
   }
   
+  void removeMouseFoot()
+  {
+    if( lastMouseFoot!= null )
+        feet.remove( lastMouseFoot );
+  }
   
   void moveTestFeet()
   {
