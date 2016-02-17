@@ -107,7 +107,7 @@ class CalibrationEffect extends Effect
     
     if( circle )
     { */
-    
+     ellipseMode(CENTER);
       strokeWeight(10);
       stroke(255); // white outline circle to show a measured point
       fill(0,0);

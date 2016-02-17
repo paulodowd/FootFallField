@@ -11,7 +11,9 @@ class DebugEffect extends Effect
     PVector lidarPos = FootFallField.calibration.screenPosForXY(0,0);
     
      strokeWeight(1);
-    
+    rectMode(CENTER);
+     ellipseMode(CENTER);
+     
     if( people != null && drawPeople )
     {
       synchronized( people )  
@@ -84,16 +86,18 @@ class DebugEffect extends Effect
           PVector screenPos = FootFallField.calibration.screenPosForReading( reading );
           if( reading.isBackground )
           {  
+            /* don't draw readings which are background
             stroke(255); // white outline circle
             fill(64);
-            ellipse(screenPos.x, screenPos.y, 10,10);
+            rect(screenPos.x, screenPos.y, 10,10);
+            */
           }
           else
           {
             
             stroke(255); // white outline circle
             fill(0,0);
-            ellipse(screenPos.x, screenPos.y, 20, 20);
+            rect(screenPos.x, screenPos.y, 20, 20);
             //line(screenPos.x, screenPos.y,width/2, height);
           }
         }

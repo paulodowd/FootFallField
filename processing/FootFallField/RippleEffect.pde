@@ -33,6 +33,7 @@ class RippleEffect extends Effect
   void draw(ArrayList<Reading> readings, ArrayList<Reading> feet, ArrayList<Person> people)
   {
     noFill();
+    ellipseMode(CENTER);
     
     synchronized( ripples )  
     {

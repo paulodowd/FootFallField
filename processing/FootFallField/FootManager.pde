@@ -71,6 +71,11 @@ class FootManager
         feet.remove( lastMouseFoot );
   }
   
+  boolean isMouseFoot( Reading reading )
+  {
+    return reading != null && reading == lastMouseFoot ;
+  }
+  
   void moveTestFeet()
   {
     int now = millis();
@@ -108,9 +113,17 @@ class FootManager
     println(Serial.list()); // print the available serial ports
     
     String portName;
-    //portName = Serial.list()[5]; //change the 0 to a 1 or 2 etc. to match your port
-    portName = "/dev/ttyUSB0";
+    if( true ) // on mac )
+    {
+      portName = Serial.list()[5]; //change the 0 to a 1 or 2 etc. to match your port
+    }
+    else
+    { // on pi 
+      portName = "/dev/ttyUSB0";
+    }
+    
     myPort = new Serial(context, portName, 115200);
+    
     myPort.buffer(5);
   }
   
@@ -236,7 +249,19 @@ void parseBuffer()
 
 void updateCurrentFoot( Reading reading )
 {
-  if( reading.isBackground || reading.range <= 0 ||                         // no object
+  // We've got a new reading, we need to decide if it represents one or more of:
+  // - nothing (if it has no range and we don't have a current foot)
+  // - the start of a new foot (if we have no current foot and the reading does have a range)
+  // - the continuation of an existing run of readings representing the current foot
+  // - the end of the current foot (if the new reading has a very different range or no range from the current foot)
+  
+  // TODO - One complication is that the lidar is prone to report readings with spurious ranges at the start and end of an object.
+  // They always have a range greater than that of the real object, sometimes by a little, sometimes by a lot
+  // So, we need to reject readings that are adjacent to other readings with much greater lengths
+  // That means we can't use the simple transition from one range to another to indicate a new, we need to ignore 
+  //  solitary readings with ranges greater than their neighbour
+  
+  if( reading.isBackground || reading.range <= 0 ||                             // no object detected
       (gotCurrentFoot && Math.abs(currentFootEndRange - reading.range) > 10 ))  // range has changed a lot
   {
     if( gotCurrentFoot )  // reached the end of an object
@@ -287,7 +312,7 @@ void cleanReadingsBeforeRotation( ArrayList<Reading> readings, int currentRotati
     for( int i = 0; i < readings.size(); )
     {
       Reading target = readings.get(i);
-      if( target.rotationCounter < currentRotation )
+      if( target.rotationCounter < currentRotation && ! isMouseFoot(target))
       {
           readings.remove(i); 
       }
@@ -324,6 +349,7 @@ void addReading( Reading reading, ArrayList<Reading> readings )
         }
         else
         {
+          if( ! isMouseFoot(target))
           readings.remove(i); // just remove later obsolete ones
         }
         
