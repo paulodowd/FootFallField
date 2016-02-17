@@ -17,9 +17,10 @@ class FootManager
   // Values for when we're spotting objects by looking for runs of similar data
   int currentFootStartRange;  // lidar range in cm
   int currentFootStartTick;   // angle in the range 0 to ticksPerRev/2, in other words 0 to 6400
-    int currentFootEndRange;  // lidar range in cm
+  int currentFootEndRange;  // lidar range in cm
   int currentFootEndTick;   // angle in the range 0 to ticksPerRev/2, in other words 0 to 6400
-
+  int currentFootNumReadings = 0;
+  
   boolean gotCurrentFoot;
   
   FootManager()
@@ -261,23 +262,27 @@ void updateCurrentFoot( Reading reading )
   // That means we can't use the simple transition from one range to another to indicate a new, we need to ignore 
   //  solitary readings with ranges greater than their neighbour
   
+  boolean hadCurrentFoot = gotCurrentFoot;
+  
   if( reading.isBackground || reading.range <= 0 ||                             // no object detected
       (gotCurrentFoot && Math.abs(currentFootEndRange - reading.range) > 10 ))  // range has changed a lot
   {
-    if( gotCurrentFoot )  // reached the end of an object
+    
+    
+    if( gotCurrentFoot )  // reached the end of the old object and the start of a new one - first, process the end
     {
-      
-      // TODO = should got to last point not this one!
-      // Why not use the array we just added to ?
-      
-      int range = (currentFootStartRange + currentFootEndRange)/2; 
-      int tick = (currentFootStartTick + currentFootEndTick) / 2;  // in the middle
-      Reading newFoot = new Reading( range, tick, reading.rotationCounter );
-      synchronized( feet )
+      if( currentFootNumReadings > 1 ||                 // old object has > 1 reading, so is not a spurious point
+          reading.isBackground || reading.range <= 0)   // new reading is empty, not a different object
       {
-        addReading( newFoot, feet );
-        FootFallField.personManager.updateForFoot( newFoot );
-        notifyNewFoot( reading );
+        int range = (currentFootStartRange + currentFootEndRange)/2; 
+        int tick = (currentFootStartTick + currentFootEndTick) / 2;  // in the middle
+        Reading newFoot = new Reading( range, tick, reading.rotationCounter );
+        synchronized( feet )
+        {
+          addReading( newFoot, feet );
+          FootFallField.personManager.updateForFoot( newFoot );
+          notifyNewFoot( newFoot );
+        }
       }
     }
     
@@ -291,15 +296,20 @@ void updateCurrentFoot( Reading reading )
       // extend the current one
       currentFootEndRange = reading.range;
       currentFootEndTick = reading.tick;
+      currentFootNumReadings ++;
     }
     else
     {
-      // start a new current foot
-      gotCurrentFoot = true;
-      currentFootStartRange = reading.range;
-      currentFootEndRange = reading.range;
-      currentFootStartTick = reading.tick;
-      currentFootEndTick = reading.tick;
+      if( ! hadCurrentFoot ) // don't start a new object right next to an old object - this excludes spurious readings at the end of an object
+      {
+        // start a new current foot
+        gotCurrentFoot = true;
+        currentFootStartRange = reading.range;
+        currentFootEndRange = reading.range;
+        currentFootStartTick = reading.tick;
+        currentFootEndTick = reading.tick;
+        currentFootNumReadings = 1;
+      }
   
     }
  
@@ -307,12 +317,13 @@ void updateCurrentFoot( Reading reading )
 
 void cleanReadingsBeforeRotation( ArrayList<Reading> readings, int currentRotation ) // clean out any leftovers at the end of a rotaiton
 {
+  
   synchronized( readings )
   {
     for( int i = 0; i < readings.size(); )
     {
       Reading target = readings.get(i);
-      if( target.rotationCounter < currentRotation && ! isMouseFoot(target))
+      if( target.rotationCounter < currentRotation -1 && ! isMouseFoot(target))
       {
           readings.remove(i); 
       }

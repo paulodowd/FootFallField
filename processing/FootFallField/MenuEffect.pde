@@ -9,7 +9,7 @@ class MenuEffect extends Effect
   ArrayList<Effect> effects = new ArrayList<Effect>();
   HashMap<Effect,Button> effectButtons = new HashMap<Effect,Button>();
   
-  Button initButton = new Button( null, 0, 20, 20 );
+  Button initButton = new Button( null, 0, 100, 20 );
   boolean active = false;
   int activationStart = 0;
   

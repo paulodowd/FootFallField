@@ -1,6 +1,6 @@
 class Button
 {
-  final static int HOLD_TIME = 3000; //foot must be in place for this long
+    final static int HOLD_TIME = 3000; //foot must be in place for this long
   
     PImage image;
     float x;   // in lidar space in cm
