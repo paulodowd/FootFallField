@@ -59,6 +59,7 @@ void setup()
    menuEffect.addEffect(new LineEffect());
    menuEffect.addEffect(new RippleEffect());
    menuEffect.addEffect(new SplatEffect()); 
+   menuEffect.addEffect(new BallEffect()); 
 
    changeEffect(menuEffect.effects.get(1));
 }
