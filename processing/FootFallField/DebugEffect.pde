@@ -3,15 +3,18 @@
 
 class DebugEffect extends Effect
 {
-
+  boolean drawPeople = true;
+  
   void draw(ArrayList<Reading> readings, ArrayList<Reading> feet, ArrayList<Person> people)
   {
-
+ 
     PVector lidarPos = FootFallField.calibration.screenPosForXY(0,0);
     
-     strokeWeight(5);
-    
-    if( people != null )
+     strokeWeight(1);
+    rectMode(CENTER);
+     ellipseMode(CENTER);
+     
+    if( people != null && drawPeople )
     {
       synchronized( people )  
       {
@@ -22,8 +25,9 @@ class DebugEffect extends Effect
           PVector screenPos = FootFallField.calibration.screenPosForXY( person.x, person.y );
           {
             // Draw the person as a big hollow circle
+           
             stroke(200);
-            fill(0);
+            noFill();
             ellipse(screenPos.x, screenPos.y, 100,100);
             
             // And draw a grey circle to show their forecast position
@@ -34,11 +38,13 @@ class DebugEffect extends Effect
             ellipse(vectorPos.x, vectorPos.y, 100,100);
   
             // and a big pale circle to show the acceptable next-step positions
+            /*
             noStroke();
             fill(100, 100, 200, 65);
             //fill(153);
             float radius = FootFallField.calibration.screenDistanceNear(person.xForecast(0), person.yForecast(0),Person.compatibleDistance);
             ellipse(vectorPos.x, vectorPos.y, radius*2,radius*2);
+            */
      
           }
         }
@@ -80,16 +86,18 @@ class DebugEffect extends Effect
           PVector screenPos = FootFallField.calibration.screenPosForReading( reading );
           if( reading.isBackground )
           {  
+            /* don't draw readings which are background
             stroke(255); // white outline circle
             fill(64);
-            ellipse(screenPos.x, screenPos.y, 10,10);
+            rect(screenPos.x, screenPos.y, 10,10);
+            */
           }
           else
           {
             
             stroke(255); // white outline circle
             fill(0,0);
-            ellipse(screenPos.x, screenPos.y, 20, 20);
+            rect(screenPos.x, screenPos.y, 20, 20);
             //line(screenPos.x, screenPos.y,width/2, height);
           }
         }

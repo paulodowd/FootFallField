@@ -19,6 +19,7 @@ class Background
   void draw()
 {
   strokeWeight(2);
+  rectMode(CENTER);
   
   fill(204, 102, 0);
   for( int i =0; i < backgroundSegments; i ++ )
@@ -30,7 +31,7 @@ class Background
         int y = (int) ((float) backgroundRangeAtAngle[i] * sin( angle ));
         
         PVector screenPos = FootFallField.calibration. screenPosForXY( x, y );
-        ellipse(screenPos.x, screenPos.y, 10, 10);
+        rect(screenPos.x, screenPos.y, 10, 10);
       }
 }
 

@@ -1,6 +1,6 @@
 class Button
 {
-  final static int HOLD_TIME = 3000; //foot must be in place for this long
+    final static int HOLD_TIME = 3000; //foot must be in place for this long
   
     PImage image;
     float x;   // in lidar space in cm
@@ -9,6 +9,8 @@ class Button
     
     PVector screenPos;
     int screenDiameter;
+    boolean forCalibration = false; // controls special behaviour for calibration
+    
     
     final static int WAITING = 0;   // Not seen a foot yet (or seen one and given up)
     final static int TIMING = 1;    // Foot must stay put
@@ -35,6 +37,22 @@ class Button
       state = WAITING;
     }
     
+    public Button( PVector _screenPos ) // special constructor for use in calibration
+    {
+      forCalibration = true;
+      x = -1;  // doon't know these yes, wil make them up from the first foot we see
+      y = -1;
+      diameter = 40;
+      
+      screenPos = _screenPos;
+      
+      screenDiameter = (int) FootFallField.calibration.screenDistanceNear( x, y, diameter );
+      
+      stateStartMillis = millis();
+   
+      state = WAITING;
+    }
+    
    void draw(ArrayList<Reading> readings, ArrayList<Reading> feet, ArrayList<Person> people)
    {
       int now = millis();
@@ -44,6 +62,11 @@ class Button
       drawState();
    }
     
+   Reading getReading() // a way to read out x, y for calibration purposes
+   {
+     return new Reading( (int) x, (int) y, millis(), 0 );
+   }
+   
    boolean isLocked()
    {
      return state == LOCKED ;
@@ -58,9 +81,29 @@ class Button
   {
     synchronized( feet )
     {
+      if( forCalibration )
+      {
+        if( state == WAITING && millis() - stateStartMillis < 3000 ) // ignore feet for first 3 secs to give time to get there
+          return false;
+          
+        if( feet.size() == 1 && state == WAITING && y < 0) // must have exactly one foot for calibration
+        {
+          x = feet.get(0).x; // set x & y from the first foot we see. foot will have to stay in place for the button time to be confirmed
+          y = feet.get(0).y;
+          return true;
+        }
+        
+        if( y < 0 )
+          return false; // don't have a position yet. don't check for matches
+      }
+      
+
       for( Reading foot : feet )
         if( foot.distanceFrom( x, y ) < diameter/2 ) 
+        {
+          //TODO - if forCalibration, could rolling-average x,y with the measured position to get a better fix
           return true;
+        }
     }
     
     return false;
@@ -100,6 +143,10 @@ class Button
    
   void changeState( int newState )
   {
+    if( forCalibration )
+      if( newState == WAITING )
+        y = -1; // forget our position when we go back to waiting, next single foot will set it again
+        
     state = newState;
     stateStartMillis = millis();
   }

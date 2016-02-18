@@ -26,7 +26,8 @@ class SplatEffect extends Effect
   {
  
     noFill();
-
+   ellipseMode(CENTER);
+ 
     synchronized( splats )  
     {
       for( int i = 0; i < splats.size(); i++ )

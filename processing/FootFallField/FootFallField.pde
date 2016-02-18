@@ -22,6 +22,8 @@ import processing.serial.*;
 public static boolean demoMode = true; // set true to run without a real lidar, with simulated footsteps
 public static boolean usingMirror = false; // set true to run when projecting via a mirror to get left/right swap
 
+public static boolean skipCalibration = true; // set to omit calibration altogether
+public static boolean debugCalibrate = false; // set to debug calibration without the real test rig
 
 Effect calibrationEffect;
 Effect currentEffect;
@@ -73,17 +75,19 @@ void draw()
 
       
     // clear to hide old blobs
+    rectMode(CORNERS);
     fill( 0 );
     rect( 0,0, width, height );
 
     doMouseFeet();
     
     boolean doCalibration = false;
-    /*
-    if( ! demoMode )
-      if( ! calibration.isCalibrated())
-        doCalibration = true;
-     */   
+    
+    if( ! skipCalibration )
+      if( debugCalibrate || ! demoMode )
+        if( ! calibration.isCalibrated())
+            doCalibration = true;
+        
    if( doCalibration )
    {
         calibrationEffect.draw(footManager.readings, footManager.feet, personManager.people);
@@ -105,32 +109,25 @@ void draw()
   
 }
 
-Reading mouseFoot = null;
+
+int lastMouseFootTime = 0;
 
 void doMouseFeet()
 {
   //if( ! demoMode )
   //  return;
     
-  synchronized( footManager.feet )
+   
+  if( mousePressed && millis() - lastMouseFootTime > 500) // don't make mouse feet too often
   {
-    if( mouseFoot != null )
-    {
-      footManager.feet.remove( mouseFoot );
-      mouseFoot = null;
-    }
-    
-      
-    if( mousePressed )
-    {
-      mouseFoot = calibration.readingForScreenPos( mouseX, mouseY);
-      footManager.feet.add( mouseFoot );
-    }
+    lastMouseFootTime = millis();
+    Reading mouseFoot = calibration.readingForScreenPos( mouseX, mouseY);
+    footManager.addMouseFoot( mouseFoot );
 
   }
   
-  if( mousePressed )
-    notifyNewFoot( mouseFoot );
+  if( ! mousePressed )
+    footManager.removeMouseFoot();
 }
 
 
