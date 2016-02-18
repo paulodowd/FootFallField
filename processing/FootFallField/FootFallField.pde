@@ -19,8 +19,8 @@
 
 import processing.serial.*;
 
-public static boolean demoMode = true; // set true to run without a real lidar, with simulated footsteps
-public static boolean usingMirror = false; // set true to run when projecting via a mirror to get left/right swap
+public static boolean demoMode = false; // set true to run without a real lidar, with simulated footsteps
+public static boolean usingMirror = true; // set true to run when projecting via a mirror to get left/right swap
 
 public static boolean skipCalibration = true; // set to omit calibration altogether
 public static boolean debugCalibrate = false; // set to debug calibration without the real test rig
@@ -60,7 +60,7 @@ void setup()
    menuEffect.addEffect(new RippleEffect());
    menuEffect.addEffect(new SplatEffect()); 
 
-   changeEffect(menuEffect.effects.get(0));
+   changeEffect(menuEffect.effects.get(1));
 }
 
 void changeEffect(Effect effect)

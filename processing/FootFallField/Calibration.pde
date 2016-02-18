@@ -12,7 +12,7 @@ class Calibration
   // Area extend from x = -200 (left) to x = +200 (right), y = 0 to 400
   
   final static int lidarWidth = 250;
-  final static int lidarDepth = 250;
+  final static int lidarDepth = 200;
   
   int screenWidth;
   int screenHeight;
