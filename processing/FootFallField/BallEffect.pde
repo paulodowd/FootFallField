@@ -20,7 +20,7 @@ class Ball
 class BallEffect extends Effect
 {
 
-  Ball ball = new Ball(0,0,20,30,255,255,0, 250, 50.0, 50.0, 7.0, 7.0);
+  Ball ball = new Ball(0,0,20,30,255,255,0, 250, 90.0, 90.0, 7.0, 7.0);
   String imageName() { return "ball.png"; }
   void draw(ArrayList<Reading> readings, ArrayList<Reading> feet, ArrayList<Person> people)
   {
@@ -29,6 +29,7 @@ class BallEffect extends Effect
     ellipseMode(CORNER);
     strokeWeight(ball.sw);
     stroke(ball.sr, ball.sg, ball.sb, ball.sa);
+    fill(ball.sr, ball.sg, ball.sb);
     //draw the circle in its current position
     ellipse(ball.x, ball.y, ball.xh, ball.yh);
   

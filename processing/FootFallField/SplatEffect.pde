@@ -35,6 +35,7 @@ class SplatEffect extends Effect
         Splat splat = splats.get(i);
         //just continue to render
         strokeWeight(splat.sw);
+        fill(splat.sr, splat.sg, splat.sb);
         stroke(splat.sr, splat.sg, splat.sb, splat.sa);
         ellipse(splat.x, splat.y, splat.d, splat.d);           
       }
@@ -49,7 +50,7 @@ class SplatEffect extends Effect
       if(splats.size() == 0){
           int x = int(random(0, width));
           int y = int(random(0, height));
-          splats.add( new Splat(x,y,20,30,int(random(0,255)),int(random(0,255)),int(random(0,255)),250)); 
+          splats.add( new Splat(x,y,90,30,int(random(0,255)),int(random(0,255)),int(random(0,255)),250)); 
           println("making splat at "+x+" "+y);
       }else{
         synchronized( splats )  
