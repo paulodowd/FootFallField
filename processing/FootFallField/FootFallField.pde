@@ -56,10 +56,12 @@ void setup()
    
    menuEffect = new MenuEffect();
    // Add each effect to the menu here so it can offer them as choices 
+   menuEffect.addEffect(new BubbleEffect()); 
+   menuEffect.addEffect(new BallEffect()); 
+   menuEffect.addEffect(new SplatEffect()); 
+
    menuEffect.addEffect(new LineEffect());
    menuEffect.addEffect(new RippleEffect());
-   menuEffect.addEffect(new SplatEffect()); 
-   menuEffect.addEffect(new BallEffect()); 
 
    changeEffect(menuEffect.effects.get(1));
 }
