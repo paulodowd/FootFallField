@@ -33,8 +33,8 @@ class FootManager
   void makeTestFeet()
   {
       // make some test feet
-    feet.add(new Reading(-180, 195, millis() - 500, 0));
-    feet.add(new Reading(-140, 205, millis(),0 ));
+    feet.add(new Reading(-180, 155, millis() - 500, 0));
+    feet.add(new Reading(-140, 165, millis(),0 ));
   }
   
   void draw()
@@ -222,7 +222,7 @@ void parseBuffer()
        print(feet.size());
        println(" feet");
      
-       //<>//
+       //<>// //<>//
       println("scanStart");
     }
     else if(( reading = scanFoot()) != null)
@@ -231,7 +231,7 @@ void parseBuffer()
       // add a new foot
 
       addReading( reading, readings );
-      updateCurrentFoot(reading); //<>//
+      updateCurrentFoot(reading); //<>// //<>//
      
     }
     else
@@ -240,7 +240,7 @@ void parseBuffer()
       {
         // must have lost sync, scan to next zero
         println("lost sync");
-        scanToNull(); //<>//
+        scanToNull(); //<>// //<>//
       }
     }
   }

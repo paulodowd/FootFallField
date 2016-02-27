@@ -64,15 +64,20 @@ class MenuEffect extends Effect
   {
     initButton.reset();
     
-    float x = 0;
+    float x = -100;
     float y = 50;
     
     synchronized( effects )
     {
       for( Effect effect : effects )
       {
-        effectButtons.put( effect, new Button( effect.imageName(), x,y,30 ));
-        x += 40;
+        effectButtons.put( effect, new Button( effect.imageName(), x,y,40 ));
+        x += 50;
+        if( x > 100 )
+         {
+           x = -100;
+           y += 50;
+         }
       }
     }
     
