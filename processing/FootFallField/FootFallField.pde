@@ -38,8 +38,8 @@ public static PersonManager personManager;                              // Manag
 void setup() 
 {
   
-  //size(1200,700); //fixed canvas size to match projector
-  fullScreen();
+  size(1200,700); //fixed canvas size to match projector
+  //fullScreen();
 
   calibration = new Calibration( width, height );
   
@@ -63,8 +63,9 @@ void setup()
 
    menuEffect.addEffect(new LineEffect());
    menuEffect.addEffect(new RippleEffect());
+   menuEffect.addEffect(new ParticleSimEffect() );
 
-   changeEffect(menuEffect.effects.get(0));
+   changeEffect(menuEffect.effects.get(6));
 }
 
 void changeEffect(Effect effect)
