@@ -10,10 +10,23 @@
 
 class ParticleSimEffect extends Effect {
   
+  // How big a radius of an effect does the 
+  // foot fall have?  
+  // For sparse particles, bigger is better.
   final float FOOTFALL_RADIUS = 100;
-  final int MAX_PARTICLES = 2000; 
+
   final float FRICTION_GAIN = 0.92;  // closer to 1, less friction
-  final long FOOTFALL_TIMEOUT = 1000; //milli seconds.
+  final long FOOTFALL_TIMEOUT = 1000; //milli seconds expiry.
+  
+  // Be careful with how many particles you pack in
+  // and their max radius.  Too dense and you get some
+  // jiggling with collision detection. 
+  // Also, you see less of the collision 'mistakes' when
+  // the particles are smaller :$
+  final int MAX_PARTICLES = 500; 
+  final float MIN_PARTICLE_DIAMETER = 1;
+  final float MAX_PARTICLE_DIAMETER = 15;
+  
   
   Particle_c particles[];  // Particles
   KdTree_c kd_tree;        // KD tree.
@@ -298,8 +311,6 @@ class Particle_c {
   PVector velocity;
   int id;
   float r, m;
-  color c1 = color( random(100,255 ) );
-  color c2 = c1;
   // Variables required to track the rate of collision
   // this particle is experiencing.
   float p_collision;  // probability between 0.1 and 1
@@ -312,7 +323,7 @@ class Particle_c {
      //velocity = PVector.random2D();
      //velocity.mult(3);
      
-     r = random(0.5,3);
+     r = random( MIN_PARTICLE_DIAMETER, MAX_PARTICLE_DIAMETER );
      m = r *  0.1;
      id = _id;
      
@@ -561,8 +572,7 @@ class Particle_c {
 
   void display() {
     noStroke();
-    color c = lerpColor( c1, c2, map( velocity.mag(), 0, 4, 0,1) );
-    fill(c);
+    fill(255);
     ellipse(position.x, position.y, r*2, r*2);
   }
 }
