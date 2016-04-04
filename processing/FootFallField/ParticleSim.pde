@@ -25,7 +25,14 @@ class ParticleSimEffect extends Effect {
   // the particles are smaller :$
   final int MAX_PARTICLES = 500; 
   final float MIN_PARTICLE_DIAMETER = 1;
-  final float MAX_PARTICLE_DIAMETER = 15;
+  final float MAX_PARTICLE_DIAMETER = 8;
+  
+  // define some easy pastel colours
+  final color colours[] = { color(252,169,133), 
+                            color(133,202, 93),
+                            color( 72,181,163),
+                            color(117,137,191),
+                            color(249,140,182) };
   
   
   Particle_c particles[];  // Particles
@@ -34,8 +41,12 @@ class ParticleSimEffect extends Effect {
   long footfall_time;      // timeout when a footfall is received.
   PVector footfall;        // Pvector, Nulled when timeout.
   
+  String imageName() { return "particles.png"; }
+  
   ParticleSimEffect() {
     int i;
+    
+    
     
     // Once - create all the particles.
     particles = new Particle_c[ MAX_PARTICLES ];
@@ -78,8 +89,9 @@ class ParticleSimEffect extends Effect {
     // Expire footfall.
     if( (millis() - footfall_time) > FOOTFALL_TIMEOUT ) footfall = null;
   
-  
   }
+  
+  
   
   void notifyNewFoot( Reading foot )
     {
@@ -89,8 +101,6 @@ class ParticleSimEffect extends Effect {
     }
     
   
-  
-
 class Point {
    float x,y,dx,dy;
    int id;
@@ -316,8 +326,11 @@ class Particle_c {
   float p_collision;  // probability between 0.1 and 1
   float t_collision;  // time of last collision.
   
+  color col;
   // Constructor, id required to check against self-collision later.
   Particle_c( int _id ) {
+    
+     col = colours[ (int)random(0,4) ];
      position = new PVector( random(0,width), random(0,height) );
      velocity = new PVector();
      //velocity = PVector.random2D();
@@ -572,7 +585,7 @@ class Particle_c {
 
   void display() {
     noStroke();
-    fill(255);
+    fill(col);
     ellipse(position.x, position.y, r*2, r*2);
   }
 }
