@@ -27,6 +27,7 @@ class ParticleSimEffect extends Effect {
   final float MIN_PARTICLE_DIAMETER = 1;
   final float MAX_PARTICLE_DIAMETER = 8;
   
+  
   // define some easy pastel colours
   final color colours[] = { color(252,169,133), 
                             color(133,202, 93),
